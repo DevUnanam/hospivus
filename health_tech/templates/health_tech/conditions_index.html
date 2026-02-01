@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load health_tech_filters %}
+
+{% block title %}Medical Conditions A-Z Index | UrbanMD Health Network{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+        <div class="bg-gradient-to-r from-blue-600 to-teal-600 rounded-lg p-8 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-4xl font-bold mb-4">Medical Conditions A-Z Index</h1>
+                    <p class="text-xl text-blue-100 mb-4">Comprehensive database of medical conditions and diseases</p>
+                    <div class="flex items-center space-x-6 text-blue-100">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <span>{{ total_conditions }} Conditions</span>
+                        </div>
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h4a1 1 0 011 1v5m-6 0V9a1 1 0 011-1h4a1 1 0 011 1v11"></path>
+                            </svg>
+                            <span>{{ departments|length }} Departments</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <svg class="w-32 h-32 text-blue-200" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Section -->
+    <div class="mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <form action="{% url 'health_tech:search_conditions' %}" method="get" class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="search" class="sr-only">Search conditions</label>
+                    <div class="relative">
+                        <input type="text" 
+                               name="q" 
+                               id="search"
+                               placeholder="Search medical conditions..." 
+                               class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                               value="{{ request.GET.q }}">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" 
+                        class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                    Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- A-Z Index Grid -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+        <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">Browse by Letter</h2>
+        <div class="grid grid-cols-6 md:grid-cols-13 gap-4">
+            {% for letter in alphabet %}
+                <div class="text-center">
+                    {% if letter_counts|lookup:letter > 0 %}
+                        <a href="{% url 'health_tech:conditions_by_letter' letter=letter|lower %}" 
+                           class="group block p-4 bg-blue-50 dark:bg-gray-700 rounded-lg hover:bg-blue-100 dark:hover:bg-gray-600 transition duration-200 transform hover:scale-105">
+                            <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300">
+                                {{ letter }}
+                            </div>
+                            <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                                {{ letter_counts|lookup:letter }} condition{{ letter_counts|lookup:letter|pluralize }}
+                            </div>
+                        </a>
+                    {% else %}
+                        <div class="block p-4 bg-gray-100 dark:bg-gray-700 rounded-lg opacity-50 cursor-not-allowed">
+                            <div class="text-2xl font-bold text-gray-400 dark:text-gray-500">
+                                {{ letter }}
+                            </div>
+                            <div class="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                                No conditions
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Department Filter Section -->
+    {% if departments %}
+    <div class="mt-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">Browse by Department</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for dept_code, dept_name in departments %}
+                    <a href="{% url 'health_tech:conditions_index' %}?department={{ dept_code }}" 
+                       class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition duration-200">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-teal-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h4a1 1 0 011 1v5m-6 0V9a1 1 0 011-1h4a1 1 0 011 1v11"></path>
+                            </svg>
+                            <span class="font-medium text-gray-900 dark:text-white">{{ dept_name }}</span>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Information Section -->
+    <div class="mt-8">
+        <div class="bg-gradient-to-r from-teal-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4">About Our Medical Database</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-teal-600 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Comprehensive Coverage</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Detailed information on hundreds of medical conditions across all specialties.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-teal-600 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Up-to-Date Information</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Regularly updated with the latest medical research and treatment guidelines.</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <svg class="w-8 h-8 text-teal-600 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-semibold text-gray-900 dark:text-white mb-2">Easy to Navigate</h4>
+                        <p class="text-gray-600 dark:text-gray-300">Organized alphabetically and by medical specialty for quick access.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom filter for dictionary lookup -->
+{% load static %}
+<script>
+// Add JavaScript for enhanced interactions if needed
+document.addEventListener('DOMContentLoaded', function() {
+    // Add any interactive features here
+});
+</script>
+{% endblock %}

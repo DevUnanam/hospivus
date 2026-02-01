@@ -1,0 +1,161 @@
+/* Custom CSS for Health Tech App */
+
+/* Medical condition cards hover effects */
+.condition-card {
+    transition: all 0.3s ease;
+}
+
+.condition-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* A-Z letter grid styles */
+.letter-grid-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.letter-grid-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.letter-grid-item:hover::before {
+    left: 100%;
+}
+
+/* Department badge styles */
+.department-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Search result highlighting */
+.search-highlight {
+    background-color: #fef3c7;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+
+.dark .search-highlight {
+    background-color: #92400e;
+    color: #fbbf24;
+}
+
+/* Loading animation for search */
+.search-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Condition detail page styles */
+.condition-detail-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.condition-section {
+    border-left: 4px solid #e5e7eb;
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.condition-section.overview {
+    border-left-color: #3b82f6;
+}
+
+.condition-section.symptoms {
+    border-left-color: #ef4444;
+}
+
+.condition-section.causes {
+    border-left-color: #f59e0b;
+}
+
+.condition-section.treatments {
+    border-left-color: #10b981;
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+    .letter-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .condition-card {
+        padding: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .condition-detail-header {
+        background: #667eea !important;
+        -webkit-print-color-adjust: exact;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .condition-card,
+    .letter-grid-item,
+    .letter-grid-item::before {
+        transition: none;
+    }
+    
+    .search-loading {
+        animation: none;
+    }
+}
+
+/* Focus indicators */
+.focus-visible:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Custom scrollbar for condition lists */
+.condition-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.condition-list::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.condition-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.condition-list::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

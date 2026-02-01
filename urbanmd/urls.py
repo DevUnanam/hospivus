@@ -21,6 +21,7 @@ urlpatterns = [
 
     # Include app URLs
     path('', include("core.urls")),
+    path('', include("health_tech.urls")),
     path('', include("accounts.urls")),
     path('', include("email_campaign.urls")),
     path('', include("appointments.urls")),

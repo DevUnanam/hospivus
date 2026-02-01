@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     # user defined apps
     'core',
+    'health_tech',
 
     'email_campaign',
     'appointments',

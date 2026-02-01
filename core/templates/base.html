@@ -280,7 +280,13 @@
                         </svg>
                         <span>Giftshop</span>
                     </a>
-
+                    <!-- Health Tech Link -->
+                    <a href="{% url 'health_tech:conditions_index' %}" class="flex items-center px-4 py-2.5 text-base font-medium rounded-lg {% if 'health_tech' in request.resolver_match.app_name %}bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400{% else %}text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700{% endif %} transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Medical Conditions</span>
+                    </a>
                     <!-- Events Link -->
                     <a href="{% url 'bulletins:events' %}" class="flex items-center px-4 py-2.5 text-base font-medium rounded-lg {% if request.resolver_match.url_name == 'events' %}bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400{% else %}text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700{% endif %} transition duration-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
