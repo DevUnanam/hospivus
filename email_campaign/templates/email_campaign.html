@@ -1,0 +1,895 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanMD Health Network - Register Here!</title>
+    <link rel="stylesheet" href="{% static 'src/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            /* font-family: 'Montserrat', sans-serif; */
+             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23173f9e' fill-opacity='0.10'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #173f9e 0%, #00b6d8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .form-container {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, rgba(23, 63, 158, 0.05) 0%, rgba(0, 182, 216, 0.05) 100%);
+            top: -50%;
+            left: -50%;
+            z-index: -1;
+            animation: rotate 30s linear infinite;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success-animation {
+            animation: success-pulse 2s ease-in-out;
+        }
+
+        @keyframes success-pulse {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Medical-themed decoration */
+        .medical-decoration {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, rgba(245, 158, 11, 0.1) 0%, rgba(251, 191, 36, 0.1) 100%);
+            z-index: -1;
+        }
+
+        .pulse {
+            animation: pulse 6s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
+
+        /* Custom loader */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #00b6d8;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Feature cards */
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: #00b6d8;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(90deg, #173f9e 0%, #00b6d8 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .feature-icon-info {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Animated gradient border */
+        @keyframes gradient-border {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-border {
+            background: linear-gradient(90deg, #173f9e, #00b6d8, #173f9e);
+            background-size: 200% 200%;
+            animation: gradient-border 3s ease infinite;
+        }
+
+        /* Coming soon badge */
+        .coming-soon-badge {
+            background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 50%, #fde047 100%);
+            color: #1f2937;
+            padding: 8px 20px;
+            padding-top: 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-flex;
+            line-height: 1;
+            margin-bottom: 16px;
+            animation: subtle-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 0.9; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
+
+        /* Toast Notification Styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            max-width: 500px;
+            pointer-events: all;
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.hide {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+
+        .toast-success {
+            border-left-color: #10b981;
+        }
+
+        .toast-error {
+            border-left-color: #ef4444;
+        }
+
+        .toast-warning {
+            border-left-color: #f59e0b;
+        }
+
+        .toast-info {
+            border-left-color: #3b82f6;
+        }
+
+        .toast-icon {
+            flex-shrink: 0;
+            width: 24px;
+            height: 24px;
+        }
+
+        .toast-success .toast-icon {
+            color: #10b981;
+        }
+
+        .toast-error .toast-icon {
+            color: #ef4444;
+        }
+
+        .toast-warning .toast-icon {
+            color: #f59e0b;
+        }
+
+        .toast-info .toast-icon {
+            color: #3b82f6;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .toast-close {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            color: #9ca3af;
+            transition: color 0.2s;
+        }
+
+        .toast-close:hover {
+            color: #4b5563;
+        }
+
+        /* Inline error styles */
+        .form-field-error {
+            border-color: #ef4444 !important;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 14px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            animation: slideInUp 0.3s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-spinner {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-info-block {
+            position: relative;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .feature-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .feature-content {
+            padding-left: 20px;
+        }
+
+        .feature-icon-static {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .stats-info-block {
+            position: relative;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .stats-accent {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+        }
+
+        .stats-content {
+            text-align: center;
+        }
+
+        /* Remove the gradient-text class as we're using solid colors */
+        .stats-info-block:hover {
+            transform: none;
+            box-shadow: none;
+            cursor: default;
+        }
+
+        /* Mobile responsiveness for toast */
+        @media (max-width: 640px) {
+            .toast-container {
+                left: 10px;
+                right: 10px;
+                top: 10px;
+            }
+
+            .toast {
+                min-width: auto;
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="loader"></div>
+            <p class="text-gray-700 font-medium">Processing your request...</p>
+        </div>
+    </div>
+
+    <!-- Decorative elements -->
+    <div class="medical-decoration pulse top-[-200px] left-[-200px] hidden lg:block"></div>
+    <div class="medical-decoration pulse bottom-[-200px] right-[-200px] hidden lg:block"></div>
+
+    <div class="min-h-screen w-full flex flex-col justify-center items-center px-4 py-12">
+        <!-- Header with Logo -->
+        <div class="w-full mb-8 flex justify-center">
+            <img src="{% static 'images/urbanmd_logo.png' %}" alt="UrbanMD Health Network Logo" class="w-80 md:w-[38rem]">
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="w-full max-w-6xl flex flex-col items-center justify-center">
+            <!-- Hero Section -->
+            <div class="text-center mb-8">
+                <div class="coming-soon-badge">Launching This Fall</div>
+                <h1 class="text-3xl md:text-6xl font-bold text-gray-800 mb-4">GET EARLY ACCESS</h1>
+                <p class="text-2xl md:text-3xl gradient-text font-bold mb-6">JOIN OUR HEALTHCARE REVOLUTION</p>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">Be among the first to access the groundbreaking UrbanMD Health Network <br> Your one-stop shop designed to connect communities to care.</p>
+            </div>
+
+            <!-- Form Section -->
+            <div class="w-full max-w-xl mx-auto bg-white form-container rounded-2xl p-8 md:p-10 relative mb-12">
+                <!-- Main Content Section -->
+                <div id="mainContent">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2 text-center">Sign Up for Exclusive Updates</h2>
+                    <p class="text-gray-600 mb-6 text-center">Be the first to know when we launch</p>
+
+                    <form id="emailCampaignForm" method="post" class="space-y-5">
+                        {% csrf_token %}
+
+                        <div>
+                            <label for="id_name" class="block text-sm font-medium text-gray-700 mb-1">Name (Optional)</label>
+                            {{ form.name }}
+                        </div>
+
+                        <div>
+                            <label for="id_email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            {{ form.email }}
+                            <div id="emailError" class="hidden"></div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="submit" class="w-full bg-gradient-to-r from-[#173f9e] to-[#00b6d8] text-white font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02] hover:shadow-lg flex justify-center items-center cursor-pointer">
+                                <span id="submitText">Get Early Access</span>
+                                <span id="submitLoader" class="hidden flex flex-row">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Processing...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-6 text-gray-500 text-sm text-center">
+                        <p>By joining, you'll receive exclusive updates about our launch and health innovations.</p>
+                    </div>
+                </div>
+
+                <!-- Success Section (Hidden by default) -->
+                <div id="successContent" class="hidden">
+                    <div class="text-center py-8">
+                        <div class="success-check mb-6 inline-block">
+                            <svg class="w-20 h-20 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+
+                        <h2 class="text-3xl font-bold text-gray-800 mb-4 success-animation" id="successTitle">Thank You!</h2>
+                        <p class="text-gray-600 mb-8" id="successMessage">You're on the list! We'll keep you updated on our launch.</p>
+
+                        <div class="animate__animated animate__fadeIn animate__delay-1s">
+                            <p class="text-gray-500 mb-6">What happens next?</p>
+
+                            <div class="space-y-4 text-left max-w-md mx-auto" id="nextSteps">
+                                <!-- Dynamic content will be inserted here -->
+                            </div>
+                        </div>
+
+                        <button id="backButton" class="mt-8 inline-flex items-center px-6 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
+                            <svg class="mr-2 -ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Form
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-3xl">
+                <div class="feature-info-block">
+                    <div class="feature-accent" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);"></div>
+                    <div class="feature-content">
+                        <div class="feature-icon-static" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-700 text-sm uppercase tracking-wide mb-2">Book Appointments</h3>
+                        <p class="text-gray-500 text-xs md:text-sm leading-relaxed">Discover & book appointments with top-rated healthcare providers effortlessly</p>
+                    </div>
+                </div>
+
+                <div class="feature-info-block">
+                    <div class="feature-accent" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                    <div class="feature-content">
+                        <div class="feature-icon-static" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-700 text-sm uppercase tracking-wide mb-2">The Gift Shop</h3>
+                        <p class="text-gray-500 text-xs md:text-sm leading-relaxed">Shop a curated selection of health & wellness products at the click of a button</p>
+                    </div>
+                </div>
+
+                <div class="feature-info-block">
+                    <div class="feature-accent" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);"></div>
+                    <div class="feature-content">
+                        <div class="feature-icon-static" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-700 text-sm uppercase tracking-wide mb-2">Stay Informed</h3>
+                        <p class="text-gray-500 text-xs md:text-sm leading-relaxed">Stay informed with the latest news and activities in healthcare</p>
+                    </div>
+                </div>
+
+                <div class="feature-info-block">
+                    <div class="feature-accent" style="background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);"></div>
+                    <div class="feature-content">
+                        <div class="feature-icon-static" style="background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-700 text-sm tracking-wide mb-2">UrbanMD TV</h3>
+                        <p class="text-gray-500 text-xs md:text-sm leading-relaxed">Watch the Streaming Channel designed to promote healthy living via a multicultural lens</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="bg-gray-50 border border-gray-200 rounded-xl p-8">
+                <h3 class="text-xl font-medium text-center text-gray-700 mb-8 uppercase tracking-wide">Connecting Communities to Care</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                    <!-- <div class="stats-info-block">
+                        <div class="stats-accent" style="background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);"></div>
+                        <div class="stats-content">
+                            <div class="text-2xl md:text-3xl font-bold text-gray-800">24/7</div>
+                            <div class="text-gray-500 text-xs uppercase tracking-wide mt-1">Support Available</div>
+                        </div>
+                    </div> -->
+                    <div class="stats-info-block">
+                        <div class="stats-accent" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);"></div>
+                        <div class="stats-content">
+                            <div class="text-2xl md:text-3xl font-bold text-gray-800">100+</div>
+                            <div class="text-gray-500 text-xs uppercase tracking-wide mt-1">Healthcare Providers</div>
+                        </div>
+                    </div>
+                    <div class="stats-info-block">
+                        <div class="stats-accent" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);"></div>
+                        <div class="stats-content">
+                            <div class="text-2xl md:text-3xl font-bold text-gray-800">30+</div>
+                            <div class="text-gray-500 text-xs uppercase tracking-wide mt-1">Service Locations</div>
+                        </div>
+                    </div>
+                    <div class="stats-info-block">
+                        <div class="stats-accent" style="background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);"></div>
+                        <div class="stats-content">
+                            <div class="text-2xl md:text-3xl font-bold text-gray-800 flex flex-row items-center justify-center">5<span class="text-xl md:2xl">★</span></div>
+                            <div class="text-gray-500 text-xs uppercase tracking-wide mt-1">Patient Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 UrbanMD Health Network. All rights reserved.</p>
+            <div class="mt-2 flex justify-center space-x-4">
+                <a href="#" class="hover:text-[#173f9e] transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-[#173f9e] transition-colors">Terms of Service</a>
+                <a href="{% url 'email_campaign:contact_us' %}" class="hover:text-[#173f9e] transition-colors">Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toast Notification System
+        class ToastNotification {
+            constructor() {
+                this.container = document.getElementById('toastContainer');
+            }
+
+            show(message, type = 'info', title = '', duration = 5000) {
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+
+                const icons = {
+                    success: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+                    error: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>',
+                    warning: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>',
+                    info: '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+                };
+
+                const defaultTitles = {
+                    success: 'Success',
+                    error: 'Error',
+                    warning: 'Warning',
+                    info: 'Information'
+                };
+
+                toast.innerHTML = `
+                    <div class="toast-icon">${icons[type]}</div>
+                    <div class="toast-content">
+                        <div class="toast-title">${title || defaultTitles[type]}</div>
+                        <div class="toast-message">${message}</div>
+                    </div>
+                    <div class="toast-close">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </div>
+                `;
+
+                this.container.appendChild(toast);
+
+                // Trigger animation
+                setTimeout(() => toast.classList.add('show'), 10);
+
+                // Close button
+                toast.querySelector('.toast-close').addEventListener('click', () => {
+                    this.hide(toast);
+                });
+
+                // Auto hide
+                if (duration > 0) {
+                    setTimeout(() => this.hide(toast), duration);
+                }
+
+                return toast;
+            }
+
+            hide(toast) {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 300);
+            }
+
+            success(message, title = '') {
+                return this.show(message, 'success', title);
+            }
+
+            error(message, title = '') {
+                return this.show(message, 'error', title);
+            }
+
+            warning(message, title = '') {
+                return this.show(message, 'warning', title);
+            }
+
+            info(message, title = '') {
+                return this.show(message, 'info', title);
+            }
+        }
+
+        // Initialize toast system
+        const toast = new ToastNotification();
+
+        // Loading overlay functions
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // Form field error handling
+        function showFieldError(field, message) {
+            field.classList.add('form-field-error');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span>${message}</span>
+            `;
+            field.parentElement.appendChild(errorDiv);
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('.form-field-error').forEach(field => {
+                field.classList.remove('form-field-error');
+            });
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.remove();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('emailCampaignForm');
+            const mainContent = document.getElementById('mainContent');
+            const successContent = document.getElementById('successContent');
+            const successTitle = document.getElementById('successTitle');
+            const successMessage = document.getElementById('successMessage');
+            const backButton = document.getElementById('backButton');
+            const submitText = document.getElementById('submitText');
+            const submitLoader = document.getElementById('submitLoader');
+            const emailField = document.getElementById('id_email');
+            const nextSteps = document.getElementById('nextSteps');
+
+            // Function to create a next step item
+            function createNextStepItem(text) {
+                return `
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 text-[#00b6d8]">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <p class="ml-3 text-gray-600">${text}</p>
+                    </div>
+                `;
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                clearFieldErrors();
+
+                // Validate email
+                const emailValue = emailField.value.trim();
+                if (!emailValue) {
+                    showFieldError(emailField, 'Email address is required');
+                    toast.warning('Please enter your email address');
+                    return;
+                }
+
+                if (!emailValue.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                    showFieldError(emailField, 'Please enter a valid email address');
+                    toast.warning('Invalid email format');
+                    return;
+                }
+
+                // Show loading state
+                submitText.classList.add('hidden');
+                submitLoader.classList.remove('hidden');
+
+                // Get form data
+                const formData = new FormData(form);
+
+                // Send AJAX request
+                fetch('', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset loading state
+                    submitText.classList.remove('hidden');
+                    submitLoader.classList.add('hidden');
+
+                    if (data.success) {
+                        // Show success toast
+                        toast.success('Successfully signed up for updates!');
+
+                        // Show success content
+                        mainContent.classList.add('hidden');
+                        successContent.classList.remove('hidden');
+
+                        // Set appropriate message and next steps
+                        if (data.is_new) {
+                            successTitle.textContent = 'Thank You!';
+                            successMessage.textContent = 'You\'re on the list! We\'ll keep you updated on our fall launch.';
+
+                            // Show all three steps for new users
+                            nextSteps.innerHTML =
+                                createNextStepItem('You\'ll receive a confirmation email shortly') +
+                                createNextStepItem('We\'ll keep you updated on our launch progress') +
+                                createNextStepItem('You\'ll get early access before the public launch');
+                        } else {
+                            successTitle.textContent = 'Welcome Back!';
+                            successMessage.textContent = 'We\'ve updated your information. Thanks for your continued interest!';
+
+                            // Show only the last two steps for returning users
+                            nextSteps.innerHTML =
+                                createNextStepItem('We\'ll keep you updated on our launch progress') +
+                                createNextStepItem('You\'ll get early access before the public launch');
+                        }
+
+                        // Add animation classes
+                        document.querySelector('.success-check').classList.add('animate__animated', 'animate__bounceIn');
+                        successTitle.classList.add('animate__animated', 'animate__fadeInUp');
+                        successMessage.classList.add('animate__animated', 'animate__fadeIn', 'animate__delay-1s');
+                    } else {
+                        // Show errors
+                        if (data.errors) {
+                            if (data.errors.email) {
+                                showFieldError(emailField, data.errors.email[0]);
+                                toast.error(data.errors.email[0], 'Email Error');
+                            } else {
+                                toast.error('Please correct the errors in the form');
+                            }
+                        } else {
+                            toast.error('An unexpected error occurred. Please try again.');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    submitText.classList.remove('hidden');
+                    submitLoader.classList.add('hidden');
+
+                    // Show error toast instead of alert
+                    toast.error('Unable to process your request. Please check your internet connection and try again.', 'Connection Error');
+                });
+            });
+
+            // Back button
+            backButton.addEventListener('click', function() {
+                successContent.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                form.reset();
+                clearFieldErrors();
+
+                // Show info toast
+                // toast.info('You can sign up again anytime!');
+            });
+
+            // Clear error on input
+            emailField.addEventListener('input', function() {
+                if (this.classList.contains('form-field-error')) {
+                    this.classList.remove('form-field-error');
+                    const errorMsg = this.parentElement.querySelector('.error-message');
+                    if (errorMsg) {
+                        errorMsg.remove();
+                    }
+                }
+            });
+
+            // // Example of other toast types, uncomment to test:
+            // setTimeout(() => toast.info('This is an info message'), 1000);
+            // setTimeout(() => toast.warning('This is a warning message'), 2000);
+            // setTimeout(() => toast.success('This is a success message'), 3000);
+            // setTimeout(() => toast.error('This is an error message'), 4000);
+        });
+    </script>
+</body>
+</html>

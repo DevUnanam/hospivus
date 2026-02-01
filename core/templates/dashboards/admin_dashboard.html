@@ -1,0 +1,372 @@
+<!-- Admin Dashboard -->
+<!-- System Overview -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">System Administration</h2>
+            <p class="mt-1 text-gray-600 dark:text-gray-400">Monitor and manage the UrbanMD platform.</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex items-center space-x-4">
+            <span class="system-health px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                {{ dashboard_stats.system_health }}
+            </span>
+            <button class="refresh-stats inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- System Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white" data-stat="total_users">{{ dashboard_stats.total_users }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-green-100 dark:bg-green-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Appointments</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white" data-stat="todays_appointments">{{ dashboard_stats.todays_appointments }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Providers</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white" data-stat="total_providers">{{ dashboard_stats.total_providers }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-orange-100 dark:bg-orange-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Organizations</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white" data-stat="total_organizations">{{ dashboard_stats.total_organizations }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Verification Queue -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Provider Verifications -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Pending Provider Verifications</h3>
+                <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                    {{ dashboard_stats.pending_provider_verifications }}
+                </span>
+            </div>
+        </div>
+        <div class="p-6">
+            {% if pending_provider_verifications %}
+            <div class="space-y-4">
+                {% for provider in pending_provider_verifications|slice:":5" %}
+                <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">Dr. {{ provider.user.full_name }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ provider.specialty }} • Applied {{ provider.created_at|timesince }} ago</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="verification-action text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
+                                data-action="approve" data-type="provider" data-id="{{ provider.id }}" title="Approve">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
+                        <button class="verification-action text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                data-action="reject" data-type="provider" data-id="{{ provider.id }}" title="Reject">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button class="verification-action text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
+                                data-action="view" data-type="provider" data-id="{{ provider.id }}" title="View Details">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if dashboard_stats.pending_provider_verifications > 5 %}
+            <div class="mt-4 text-center">
+                <a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                    View all {{ dashboard_stats.pending_provider_verifications }} pending →
+                </a>
+            </div>
+            {% endif %}
+            {% else %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center">No pending verifications</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Organization Verifications -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Pending Organization Verifications</h3>
+                <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                    {{ dashboard_stats.pending_org_verifications }}
+                </span>
+            </div>
+        </div>
+        <div class="p-6">
+            {% if pending_org_verifications %}
+            <div class="space-y-4">
+                {% for org in pending_org_verifications|slice:":5" %}
+                <div class="flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-lg">
+                    <div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">{{ org.name }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ org.organization_type }} • Applied {{ org.created_at|timesince }} ago</p>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button class="verification-action text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300"
+                                data-action="approve" data-type="organization" data-id="{{ org.id }}" title="Approve">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </button>
+                        <button class="verification-action text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+                                data-action="reject" data-type="organization" data-id="{{ org.id }}" title="Reject">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                        <button class="verification-action text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300"
+                                data-action="view" data-type="organization" data-id="{{ org.id }}" title="View Details">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if dashboard_stats.pending_org_verifications > 5 %}
+            <div class="mt-4 text-center">
+                <a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                    View all {{ dashboard_stats.pending_org_verifications }} pending →
+                </a>
+            </div>
+            {% endif %}
+            {% else %}
+            <p class="text-sm text-gray-500 dark:text-gray-400 text-center">No pending verifications</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- System Activity -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">System Activity</h3>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Today's Stats -->
+            <div class="text-center">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">New Users Today</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white" data-stat="new_users_today">{{ dashboard_stats.new_users_today }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                    <span class="text-green-600 dark:text-green-400">↑ 12%</span> from yesterday
+                </p>
+            </div>
+
+            <!-- Active Sessions -->
+            <div class="text-center">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Active Sessions</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white" data-system-stat="active_sessions">{{ dashboard_stats.active_sessions }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Currently online</p>
+            </div>
+
+            <!-- Patient Count -->
+            <div class="text-center">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Total Patients</p>
+                <p class="text-3xl font-bold text-gray-900 dark:text-white" data-stat="total_patients">{{ dashboard_stats.total_patients }}</p>
+                <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Registered patients</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions & System Alerts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Quick Actions -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Quick Actions</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-2 gap-4">
+                <a href="#" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">Manage Users</p>
+                </a>
+
+                <a href="#" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">View Reports</p>
+                </a>
+
+                <a href="#" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">System Settings</p>
+                </a>
+
+                <a href="#" class="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-600 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p class="text-sm font-medium text-gray-900 dark:text-white">System Logs</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Alerts -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">System Alerts</h3>
+        </div>
+        <div class="p-6 system-alerts">
+            {% if system_alerts %}
+            <div class="space-y-3">
+                {% for alert in system_alerts %}
+                <div class="flex items-start space-x-3 p-3 rounded-lg {% if alert.type == 'critical' %}bg-red-50 dark:bg-red-900/20{% elif alert.type == 'warning' %}bg-yellow-50 dark:bg-yellow-900/20{% else %}bg-blue-50 dark:bg-blue-900/20{% endif %}">
+                    <div class="flex-shrink-0">
+                        {% if alert.type == 'critical' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600 dark:text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        {% elif alert.type == 'warning' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 dark:text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600 dark:text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium {% if alert.type == 'critical' %}text-red-800 dark:text-red-300{% elif alert.type == 'warning' %}text-yellow-800 dark:text-yellow-300{% else %}text-blue-800 dark:text-blue-300{% endif %}">
+                            {{ alert.title }}
+                        </p>
+                        <p class="text-sm {% if alert.type == 'critical' %}text-red-600 dark:text-red-400{% elif alert.type == 'warning' %}text-yellow-600 dark:text-yellow-400{% else %}text-blue-600 dark:text-blue-400{% endif %} mt-1">
+                            {{ alert.message }}
+                        </p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">No system alerts</p>
+                <p class="text-xs text-gray-400 dark:text-gray-500">All systems operational</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity Log -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex justify-between items-center">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent System Activity</h3>
+            <a href="#" class="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">View all →</a>
+        </div>
+    </div>
+    <div class="p-6">
+        {% if recent_activities %}
+        <div class="flow-root">
+            <ul role="list" class="-mb-8">
+                {% for activity in recent_activities|slice:":8" %}
+                <li>
+                    <div class="relative pb-8">
+                        {% if not forloop.last %}
+                        <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-700" aria-hidden="true"></span>
+                        {% endif %}
+                        <div class="relative flex space-x-3">
+                            <div>
+                                <span class="h-8 w-8 rounded-full bg-{{ activity.color|default:'gray' }}-100 dark:bg-{{ activity.color|default:'gray' }}-900/30 flex items-center justify-center ring-8 ring-white dark:ring-gray-800">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-{{ activity.color|default:'gray' }}-600 dark:text-{{ activity.color|default:'gray' }}-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        {% if activity.type == 'user_registration' %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                        {% elif activity.type == 'verification' %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        {% elif activity.type == 'appointment' %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        {% else %}
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        {% endif %}
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
+                                <div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">{{ activity.description|safe }}</p>
+                                </div>
+                                <div class="whitespace-nowrap text-right text-sm text-gray-500 dark:text-gray-400">
+                                    <time datetime="{{ activity.timestamp|date:'c' }}">{{ activity.timestamp|timesince }} ago</time>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-8">No recent activity to display.</p>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Contact Form Submission</title>
+    <style>
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333333;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 30px 40px;
+            text-align: center;
+            border-bottom: 3px solid #2c5282;
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .alert-banner {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .alert-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #92400e;
+            margin-bottom: 5px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .field-label {
+            font-weight: bold;
+            color: #2c5282;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .field-value {
+            color: #333333;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .message-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid #2c5282;
+            margin-top: 25px;
+        }
+
+        .message-content {
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 15px;
+        }
+
+        @media screen and (max-width: 600px) {
+            .email-container { width: 100% !important; }
+            .content { padding: 20px !important; }
+            .header { padding: 20px !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header with Logo -->
+        <div class="header">
+            <img src="https://www.urbanmdhealthnetwork.com/static/images/urbanmd_logo.png" alt="UrbanMD Health Network Logo" class="logo">
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <div class="alert-banner">
+                <div class="alert-title">New Contact Form Submission</div>
+                <div>A new message has been received from the UrbanMD website contact form.</div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="section">
+                <h3 style="color: #2c5282; margin-bottom: 15px;">Contact Information</h3>
+
+                <span class="field-label">Name:</span>
+                <span class="field-value">{{ first_name }} {{ last_name }}</span>
+
+                <span class="field-label">Email:</span>
+                <span class="field-value"><a href="mailto:{{ email }}" style="color: #2c5282;">{{ email }}</a></span>
+
+                <span class="field-label">Phone:</span>
+                <span class="field-value">{{ phone|default:"Not provided" }}</span>
+
+                <span class="field-label">Subject:</span>
+                <span class="field-value">{{ subject }}</span>
+            </div>
+
+            <!-- Message -->
+            <div class="message-section">
+                <h3 style="color: #2c5282; margin-bottom: 15px;">Message</h3>
+                <div class="message-content">{{ message }}</div>
+            </div>
+
+            <div class="timestamp">
+                Submitted on: {{ timestamp }}
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>This is an automated notification from the UrbanMD Health Network contact form.</p>
+            <p style="margin-top: 10px;">
+                To respond to this inquiry, please reply directly to: <a href="mailto:{{ email }}" style="color: #2c5282;">{{ email }}</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

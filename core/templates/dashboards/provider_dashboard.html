@@ -1,0 +1,247 @@
+<!-- Provider Dashboard -->
+<!-- Welcome Message & Quick Actions -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back, Dr. {{ request.user.last_name }}!</h2>
+            <p class="mt-1 text-gray-600 dark:text-gray-400">Here's your practice overview for today.</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+            <button class="quick-action inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                    data-action="new-patient">
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                New Patient
+            </button>
+            <button class="quick-action inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                    data-action="prescriptions">
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                </svg>
+                Prescriptions
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Today's Appointments</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white metric-value">{{ dashboard_stats.todays_appointments_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-green-100 dark:bg-green-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">This Week</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white metric-value">{{ dashboard_stats.weekly_appointments_count }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-purple-100 dark:bg-purple-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Patients</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white metric-value">{{ dashboard_stats.total_patients }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg p-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600 dark:text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                </svg>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Your Rating</p>
+                <p class="text-2xl font-semibold text-gray-900 dark:text-white">{{ dashboard_stats.rating }} <span class="text-sm text-gray-500">({{ dashboard_stats.reviews_count }})</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Today's Schedule -->
+    <div class="lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Today's Schedule</h3>
+                <span class="text-sm text-gray-500 dark:text-gray-400">{{ "now"|date:"l, F j, Y" }}</span>
+            </div>
+        </div>
+        <div class="p-6 patient-queue">
+            {% if todays_appointments %}
+            <div class="space-y-4">
+                {% for appointment in todays_appointments %}
+                <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 {% if appointment.status == 'COMPLETED' %}bg-gray-50 dark:bg-gray-700/50{% endif %}">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center">
+                                <span class="text-sm font-medium text-gray-900 dark:text-white">
+                                    {{ appointment.start_time|time:"g:i A" }} - {{ appointment.end_time|time:"g:i A" }}
+                                </span>
+                                <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if appointment.status == 'COMPLETED' %}bg-gray-100 text-gray-800 dark:bg-gray-600 dark:text-gray-200
+                                    {% elif appointment.status == 'CONFIRMED' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
+                                    {% else %}bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400{% endif %}">
+                                    {{ appointment.get_status_display }}
+                                </span>
+                            </div>
+                            <h4 class="mt-2 text-base font-medium text-gray-900 dark:text-white">
+                                {{ appointment.patient.get_full_name }}
+                            </h4>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Reason: {{ appointment.reason|default:"General consultation" }}
+                            </p>
+                            {% if appointment.notes %}
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Notes: {{ appointment.notes|truncatewords:20 }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        <div class="ml-4 flex flex-col space-y-2">
+                            {% if appointment.status == 'SCHEDULED' or appointment.status == 'CONFIRMED' %}
+                            <button class="provider-appointment-action inline-flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                                    data-action="start"
+                                    data-appointment-id="{{ appointment.id }}">
+                                Start Session
+                            </button>
+                            <button class="provider-appointment-action inline-flex items-center px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-xs font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                                    data-action="notes"
+                                    data-appointment-id="{{ appointment.id }}">
+                                View Details
+                            </button>
+                            {% elif appointment.status == 'IN_PROGRESS' %}
+                            <button class="provider-appointment-action inline-flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
+                                    data-action="complete"
+                                    data-appointment-id="{{ appointment.id }}">
+                                Complete Session
+                            </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">No appointments scheduled for today</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="space-y-6">
+        <!-- Quick Stats -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">This Month</h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">New Patients</span>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ dashboard_stats.new_patients_this_month }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Revenue</span>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">${{ dashboard_stats.monthly_revenue|floatformat:2 }}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-sm text-gray-600 dark:text-gray-400">Pending Payments</span>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">${{ dashboard_stats.pending_payments|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Office Hours -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white">Office Hours</h3>
+                    <a href="{% url 'appointments:manage_schedule' %}" class="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
+                        Edit
+                    </a>
+                </div>
+            </div>
+            <div class="p-6">
+                {% if office_hours %}
+                <div class="space-y-2">
+                    {% for hours in office_hours %}
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-600 dark:text-gray-400">{{ hours.get_day_of_week_display }}</span>
+                        <span class="text-gray-900 dark:text-white">
+                            {% if hours.is_available %}
+                                {{ hours.start_time|time:"g:i A" }} - {{ hours.end_time|time:"g:i A" }}
+                            {% else %}
+                                Closed
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-sm text-gray-500 dark:text-gray-400">No office hours set. <a href="{% url 'appointments:manage_schedule' %}" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">Set your schedule</a></p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Quick Actions</h3>
+            </div>
+            <div class="p-6 space-y-3">
+                <button class="quick-action w-full text-left px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                        data-action="lab-results">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">View Lab Results</span>
+                    </div>
+                </button>
+                <button class="quick-action w-full text-left px-4 py-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                        data-action="messages">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
+                        <span class="text-sm font-medium text-gray-900 dark:text-white">Patient Messages</span>
+                        {% if recent_messages %}
+                        <span class="ml-auto bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 text-xs font-medium px-2 py-0.5 rounded-full">{{ recent_messages|length }}</span>
+                        {% endif %}
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

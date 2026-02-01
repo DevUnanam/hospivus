@@ -1,0 +1,121 @@
+{% load static %}
+
+{% if doctors %}
+    {% for doctor in doctors %}
+    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 hover:shadow-lg transition-all cursor-pointer">
+        <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0">
+                {% if doctor.profile_picture %}
+                    <img class="h-20 w-20 rounded-full object-cover" src="{{ doctor.profile_picture.url }}" alt="{{ doctor.user.full_name }}">
+                {% else %}
+                    <div class="h-20 w-20 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                        <span class="text-2xl font-bold text-white">{{ doctor.user.first_name.0 }}{{ doctor.user.last_name.0 }}</span>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            Dr. {{ doctor.user.first_name }} {{ doctor.user.last_name }}
+                        </h4>
+                        <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                            {{ doctor.specialty|default:"General Practice" }}
+                        </p>
+                        {% if doctor.years_of_experience %}
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            {{ doctor.years_of_experience }} years of experience
+                        </p>
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                        </svg>
+                        <span class="ml-1 text-sm text-gray-600 dark:text-gray-400">
+                            {{ doctor.rating }} ({{ doctor.reviews_count }})
+                        </span>
+                    </div>
+                </div>
+
+                {% if doctor.bio %}
+                <p class="mt-3 text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                    {{ doctor.bio|truncatewords:30 }}
+                </p>
+                {% endif %}
+
+                {% with primary_affiliation=doctor.provider_affiliations.all|first %}
+                {% if primary_affiliation %}
+                <div class="mt-3 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    {{ primary_affiliation.provider.name }}
+                    {% if primary_affiliation.department %} - {{ primary_affiliation.department }}{% endif %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                {% with primary_location=doctor.practice_locations.all|first %}
+                {% if primary_location %}
+                <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {{ primary_location.city }}, {{ primary_location.state }}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <div class="mt-4 flex flex-wrap gap-2">
+                    {% if doctor.insurance %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Insurance Accepted
+                    </span>
+                    {% endif %}
+
+                    {% if doctor.is_verified %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Verified
+                    </span>
+                    {% endif %}
+
+                    {% if doctor.accepts_telehealth %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Telehealth Available
+                    </span>
+                    {% endif %}
+
+                    {% if doctor.available_today %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Available Today
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="mt-4 flex space-x-3">
+                    <button onclick="bookAppointment({{ doctor.id }})" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                        Book Appointment
+                    </button>
+                    <button onclick="viewDoctorProfile({{ doctor.id }})" class="inline-flex justify-center items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                        View Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg mt-8">
+    <h1 class="text-2xl font-bold mb-4">Confirm Delete</h1>
+    <p>Are you sure you want to delete product: <strong>{{ product.name }}</strong>?</p>
+
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="mr-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Yes, Delete</button>
+      <a href="{% url 'giftshops:product_detail' product.pk %}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

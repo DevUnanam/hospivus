@@ -1,0 +1,449 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | UrbanMD Health Network</title>
+    <link rel="stylesheet" href="{% static 'src/styles.css' %}">
+
+    <!-- Preconnect to CDN for faster resource loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+    <!-- Critical CSS -->
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-light-blue: #0ea5e9;
+            --primary-gradient: linear-gradient(90deg, #1e3a8a 0%, #0ea5e9 100%);
+            --secondary-gradient: linear-gradient(90deg, rgba(23, 63, 158, 0.05) 0%, rgba(0, 182, 216, 0.05) 100%);
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .dark {
+            color-scheme: dark;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --bg-light: #1f2937;
+            --card-bg: #111827;
+            --border-color: #374151;
+        }
+
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .dark .page-loader {
+            background-color: #1f2937;
+        }
+
+        .page-loader.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-pulse {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+        }
+
+        .form-container {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .decoration {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            z-index: -1;
+            animation: pulse 6s infinite ease-in-out;
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background-color: #f3f4f6;
+        }
+
+        .dark .btn-outline:hover {
+            background-color: #374151;
+        }
+
+        .btn-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.9;
+        }
+
+        .btn-pulse {
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        @keyframes buttonBounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(1.03);
+            }
+            40% {
+                transform: scale(0.97);
+            }
+            60% {
+                transform: scale(1.01);
+            }
+            80% {
+                transform: scale(0.99);
+            }
+        }
+
+        .btn-pulse.bouncing {
+            animation: buttonBounce 0.6s;
+        }
+
+        /* Form field styles */
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .dark .field-input {
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--primary-light-blue);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .field-error {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Password visibility toggle */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 640px) {
+            .hidden-sm {
+                display: none;
+            }
+        }
+
+        @media (min-width: 641px) {
+            .hidden-md {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-pulse"></div>
+    </div>
+
+    <!-- Decorative elements -->
+    <div class="decoration hidden-sm" style="top: -200px; left: -200px;"></div>
+    <div class="decoration hidden-sm" style="bottom: -200px; right: -200px;"></div>
+
+    <div class="min-h-screen w-full flex flex-col justify-center items-center px-4 py-12">
+        <!-- Header with Logo -->
+        <div class="w-full mb-8 flex justify-center">
+            <a href="/">
+                <img src="{% static 'images/urbanmd_logo.png' %}" alt="UrbanMD Health Network Logo" class="h-14">
+            </a>
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="w-full max-w-md bg-white dark:bg-gray-800 form-container p-6 md:p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2">Welcome Back</h1>
+                <p class="text-xl gradient-text font-semibold">Sign in to your account</p>
+            </div>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-4">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="field-group">
+                    <label for="{{ form.username.id_for_label }}" class="field-label">Email Address</label>
+                    <input type="email" name="{{ form.username.html_name }}" id="{{ form.username.id_for_label }}"
+                        class="field-input"
+                        {% if form.username.value %}value="{{ form.username.value }}"{% endif %} required>
+                    {% if form.username.errors %}
+                    <div class="field-error">
+                        {% for error in form.username.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="field-group">
+                    <label for="{{ form.password.id_for_label }}" class="field-label">Password</label>
+                    <div class="relative">
+                        <input type="password" name="{{ form.password.html_name }}" id="{{ form.password.id_for_label }}"
+                            class="field-input" required>
+                        <span class="password-toggle" data-target="{{ form.password.id_for_label }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                            </svg>
+                        </span>
+                    </div>
+                    {% if form.password.errors %}
+                    <div class="field-error">
+                        {% for error in form.password.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Remember me</label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 transition duration-300">Forgot password?</a>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full btn btn-gradient btn-pulse">
+                        Sign In
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Already have an account link -->
+            <div class="text-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <p class="text-gray-600 dark:text-gray-400">
+                    Don't have an account? <a href="{% url 'accounts:register_user' %}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Create Account</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer with Dynamic Year -->
+        <div class="mt-10 text-center text-gray-500 text-sm">
+            <p>&copy; <script>document.write(new Date().getFullYear());</script> UrbanMD Health Network. All rights reserved.</p>
+            <div class="mt-2 flex justify-center space-x-4">
+                <a href="#" class="hover:text-blue-600">Privacy Policy</a>
+                <a href="#" class="hover:text-blue-600">Terms of Service</a>
+                <a href="#" class="hover:text-blue-600">Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize page
+            hidePageLoader();
+            setupPasswordToggles();
+            setupButtonAnimation();
+
+            // Dark mode toggle - check system preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        });
+
+        function hidePageLoader() {
+            // Hide loader after slight delay
+            setTimeout(function() {
+                const loader = document.querySelector('.page-loader');
+                loader.classList.add('loaded');
+                setTimeout(() => loader.remove(), 500);
+            }, 500);
+        }
+
+        function setupPasswordToggles() {
+            document.querySelectorAll('.password-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordField = document.getElementById(targetId);
+                    const showIcon = this.querySelector('.show-password');
+                    const hideIcon = this.querySelector('.hide-password');
+
+                    if (passwordField.type === 'password') {
+                        passwordField.type = 'text';
+                        showIcon.classList.add('hidden');
+                        hideIcon.classList.remove('hidden');
+                    } else {
+                        passwordField.type = 'password';
+                        hideIcon.classList.add('hidden');
+                        showIcon.classList.remove('hidden');
+                    }
+                });
+            });
+        }
+
+        function setupButtonAnimation() {
+            // Add click animation to all pulse buttons
+            document.querySelectorAll('.btn-pulse').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove any existing animation
+                    this.classList.remove('bouncing');
+
+                    // Force a reflow to restart the animation
+                    void this.offsetWidth;
+
+                    // Add the animation class
+                    this.classList.add('bouncing');
+
+                    // Clean up animation class after it completes
+                    setTimeout(() => {
+                        this.classList.remove('bouncing');
+                    }, 600); // Match animation duration
+                });
+            });
+        }
+    </script>
+</body>
+</html>

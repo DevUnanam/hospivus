@@ -1,0 +1,1179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Giftshop | UrbanMD Health Network{% endblock %}
+
+{% block page_title %}Giftshop{% endblock %}
+
+{% block content %}
+
+<style>
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            z-index: 100;
+            background-color: white;
+            max-height: 280px;
+            overflow-y: auto;
+            width: 100%;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .dark .autocomplete-items {
+            background-color: #374151;
+            border-color: #4b5563;
+        }
+        .autocomplete-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            color: #374151;
+        }
+        .dark .autocomplete-item {
+            border-bottom-color: #4b5563;
+            color: #d1d5db;
+        }
+        .autocomplete-item:hover {
+            background-color: #f3f4f6;
+        }
+        .dark .autocomplete-item:hover {
+            background-color: #4b5563;
+        }
+        .autocomplete-item:last-child {
+            border-bottom: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+<div class="space-y-6">
+    {% if user_role == "INDIVIDUAL_PROVIDER" or user_role == "ORGANIZATION" %}
+    <a href="{% url 'giftshops:manage_shop' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">Manage Your Giftshop</a>
+{% endif %}
+
+
+    <!-- Welcome Message & Search -->
+     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex flex-col gap-4">
+            <!-- Title & Subtitle -->
+             <div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">
+                    Health & Wellness Products
+                </h2>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">
+                    Shop our curated collection of health essentials.
+                </p>
+            </div>
+            <!-- Search Form -->
+             <form method="get" action="{% url 'giftshops:search_products' %}" class="space-y-4" id="product-search-form">
+                <!-- Main Search Input (Full width) -->
+                 <div class="relative w-full">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <!-- Search icon SVG -->
+                         <svg xmlns="http://www.w3.org/2000/svg"
+                         class="h-5 w-5 text-gray-400"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                         d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1110.5 3a7.5 7.5 0 016.15 13.65z" />
+                        </svg>
+                    </div>
+                    <input
+                    type="text"
+                    name="q"
+                    id="search-input"
+                    placeholder="Type to search for products... (e.g., vitamin, blood pressure, thermometer)"
+                    autocomplete="off"
+                    class="pl-10 pr-4 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm py-3 transition-all duration-200"
+                    />
+                    <div id="autocomplete-list" class="autocomplete-items"></div>
+                    <div id="search-loading" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+                        <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <!-- Three Dropdowns in a Row -->
+                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <select name="category" class="rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm py-3">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="organisation" class="rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm py-3">
+                        <option value="">All Organizations</option>
+                        {% for org in product_organizations %}
+                            <option value="{{ org.id }}">
+                                {% if org.userprofile.user_role == "INDIVIDUAL_PROVIDER" %}
+                                    Dr. {{ org.get_full_name|default:org.email }}
+                                {% elif org.userprofile.user_role == "ORGANIZATION" %}
+                                    {{ org.organizationprofile.organization_name|default:org.email }}
+                                {% else %}
+                                    {{ org.get_full_name|default:org.email }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="price_range" class="rounded-md shadow-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm py-3">
+                        <option value="">All Prices</option>
+                        <option value="1-10">$1 - $10</option>
+                        <option value="10-25">$10 - $25</option>
+                        <option value="25-50">$25 - $50</option>
+                        <option value="50-100">$50 - $100</option>
+                        <option value="100-200">$100 - $200</option>
+                        <option value="200-500">$200 - $500</option>
+                        <option value="500-1000">$500 - $1000</option>
+                        <option value="1000-plus">Over $1000</option>
+                    </select>
+                </div>
+                <!-- Sort & Search Button Row -->
+                 <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+                    <!-- Sort Dropdown (moved from below) -->
+                     <select name="sort" class="rounded-md border-gray-300 shadow-sm dark:border-gray-600 py-3 dark:bg-gray-700 dark:text-white text-sm w-full sm:w-auto">
+                        <option value="">Sort by</option>
+                        <option value="price_low">Price: Low to High</option>
+                        <option value="price_high">Price: High to Low</option>
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name_asc">Name: A to Z</option>
+                        <option value="name_desc">Name: Z to A</option>
+                        <option value="featured">Featured First</option>
+                    </select>
+                    <!-- Search Button -->
+                     <button type="submit" class="px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md text-sm w-full sm:w-auto">
+                        Search Products
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Product Categories (Shop Page) -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm ">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Shop by Category</h3>
+
+            <!-- View All Button -->
+            <button type="button" id="openCategoriesBtn"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-indigo-700">View All Categories</button>
+        </div>
+    </div>
+
+    <!-- First 6 categories -->
+    <div class="p-6">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {% for category in categories %}
+            <a href="{% url 'giftshops:category_products' category_id=category.id %}"
+               class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4 text-center hover:shadow-md transition-all flex flex-col items-center justify-center">
+                <div class="h-12 w-12 bg-blue-100 dark:bg-blue-900/40 rounded-full flex items-center justify-center mb-3 overflow-hidden">
+                    <img src="{{ category.category_photo.url }}" alt="{{ category.name }}"
+                         class="h-full w-full object-cover rounded-full" />
+                </div>
+                <h4 class="font-medium text-gray-900 dark:text-white text-sm">{{ category.name }}</h4>
+            </a>
+            {% empty %}
+            <p class="text-gray-500">No categories available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+    <!-- Featured Products -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Featured Products</h3>
+
+            <!-- View All Button -->
+            <button type="button" id="openFeaturedProductsBtn"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">View All Featured Products</button>
+        </div>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    {% for product in featured_products|slice:":6" %}
+        {% if product.id %}
+            <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden h-full flex flex-col cursor-pointer"
+                 onclick="window.location.href='{% url 'giftshops:product_detail' pk=product.id %}'">
+                <!-- Image Container -->
+                <div class="relative h-48 w-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                             class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300">
+                    {% else %}
+                        <div class="h-full w-full flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                            <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                    {% endif %}
+
+                    <!-- Featured Badge -->
+                    {% if product.is_featured %}
+                    <div class="absolute top-3 left-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white shadow-sm">
+                            ⭐ Featured
+                        </span>
+                    </div>
+                    {% endif %}
+
+                    <!-- Stock Status Badge -->
+                    {% if product.is_out_of_stock %}
+                    <div class="absolute top-3 right-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-sm">
+                            🚫 Out of Stock
+                        </span>
+                    </div>
+                    {% elif product.is_almost_out_of_stock %}
+                    <div class="absolute top-3 right-3">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-500 text-white shadow-sm">
+                            ⚠️ Almost Out
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Content Container -->
+                <div class="p-5 flex flex-col flex-grow">
+                    <!-- Product Name -->
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2 text-center">
+                        {{ product.name }}
+                    </h3>
+
+                    <!-- Category & Creator Info -->
+                    <div class="flex flex-wrap items-center gap-2 mb-4">
+                        <!-- Category Badge -->
+                        {% if product.category %}
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                {{ product.category.name }}
+                            </span>
+                        {% endif %}
+
+                        <!-- Creator Info -->
+                        {% if product.created_by %}
+                            {% if product.created_by.userprofile.user_role == "INDIVIDUAL_PROVIDER" %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">Dr. {{ product.created_by.get_full_name|default:product.created_by.email }}</span>
+                            {% elif product.created_by.userprofile.user_role == "ORGANIZATION" %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">{{ product.created_by.organizationprofile.organization_name|default:product.created_by.email }}</span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">{{ product.created_by.get_full_name|default:product.created_by.email }}</span>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Price & Action Icons -->
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex flex-col">
+                            <p class="text-xl font-bold text-green-600 dark:text-green-400">${{ product.price }}</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">
+                                {% if product.is_out_of_stock %}
+                                    Out of stock
+                                {% elif product.is_almost_out_of_stock %}
+                                    Only {{ product.stock_quantity }} left
+                                {% else %}
+                                    {{ product.stock_quantity }} in stock
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-2" onclick="event.stopPropagation();">
+                            <!-- View Details Icon -->
+                            <a href="{% url 'giftshops:product_detail' pk=product.id %}"
+                               class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105"
+                               title="View Details">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </a>
+                            <!-- Add to Cart Icon -->
+                            {% if product.is_out_of_stock %}
+                                <button type="button" disabled class="p-2 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-50"
+                                        title="Out of Stock">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
+                                    </svg>
+                                </button>
+                            {% else %}
+                                <form method="POST" action="{% url 'giftshops:add_to_cart' product.id %}" class="inline-block">
+                                    {% csrf_token %}
+                                    <button type="submit" class="p-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105"
+                                            title="Add to Cart">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m4.5-5a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    {% if product.description %}
+                    <p class="text-sm text-gray-700 dark:text-gray-400 flex-grow mb-4 line-clamp-3">
+                        {{ product.description|truncatewords:15 }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% empty %}
+        <p class="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">No featured products available.</p>
+    {% endfor %}
+</div>
+    </div>
+</div>
+
+
+    <!-- Recommendations Based on Health Profile -->
+    {% comment %} <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recommended For You</h3>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Product Card -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/omega3.jpg' %}" alt="Omega-3 Fish Oil" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-start justify-between">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Omega-3 Fish Oil</h4>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                Recommended
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">90 softgels, 1000mg</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$22.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/magnesium.jpg' %}" alt="Magnesium Supplement" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-start justify-between">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Magnesium Supplement</h4>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                Recommended
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">120 tablets, 400mg</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$18.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/resistance_bands.jpg' %}" alt="Resistance Bands Set" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-start justify-between">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Resistance Bands Set</h4>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                Recommended
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">5 resistance levels, carrying case</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$29.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/sleep_mask.jpg' %}" alt="Contoured Sleep Mask" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-start justify-between">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Contoured Sleep Mask</h4>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                Recommended
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Breathable fabric, adjustable strap</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$14.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+    <!-- Popular Categories Grid -->
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+  <!-- New Arrivals -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">New Arrivals</h3>
+      </div>
+      <div class="p-6">
+          <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+              {% for product in new_arrivals %}
+                {% if product.id %}
+                  <li class="py-4 flex">
+                      <div class="flex-shrink-0 h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                          {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover">
+                          {% else %}
+                            <img src="{% static 'images/placeholder.png' %}" alt="No image" class="h-full w-full object-cover">
+                          {% endif %}
+                      </div>
+                      <div class="ml-4 flex-1 flex justify-between">
+                          <div>
+                              <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ product.name }}</h4>
+                              {% if product.description %}
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ product.description|truncatewords:8 }}</p>
+                              {% endif %}
+                          </div>
+                          <div class="flex items-center">
+                              <span class="text-sm font-medium text-gray-900 dark:text-white">₦{{ product.price }}</span>
+                              {% if product.is_out_of_stock %}
+                                  <button type="button" disabled class="ml-4 p-1.5 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm text-gray-400 bg-gray-200 dark:bg-gray-600 cursor-not-allowed opacity-50"
+                                          title="Out of Stock">
+                                      ✕
+                                  </button>
+                              {% else %}
+                                  <form method="POST" action="{% url 'giftshops:add_to_cart' product.id %}" class="ml-4 inline-block">
+                                      {% csrf_token %}
+                                      <button type="submit" class="p-1.5 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-green-50 dark:hover:bg-green-600 hover:text-green-600 dark:hover:text-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
+                                              title="Add to Cart">
+                                          +
+                                      </button>
+                                  </form>
+                              {% endif %}
+                          </div>
+                      </div>
+                  </li>
+                {% endif %}
+              {% empty %}
+                <li class="py-4 text-gray-500 dark:text-gray-400">No new arrivals yet.</li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
+
+  <!-- Best Sellers -->
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Best Sellers</h3>
+      </div>
+      <div class="p-6">
+          <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+              {% for product in best_sellers %}
+                {% if product.id %}
+                  <li class="py-4 flex">
+                      <div class="flex-shrink-0 h-16 w-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                          {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="h-full w-full object-cover">
+                          {% else %}
+                            <img src="{% static 'images/placeholder.png' %}" alt="No image" class="h-full w-full object-cover">
+                          {% endif %}
+                      </div>
+                      <div class="ml-4 flex-1 flex justify-between">
+                          <div>
+                              <h4 class="text-sm font-medium text-gray-900 dark:text-white">{{ product.name }}</h4>
+                              {% if product.description %}
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ product.description|truncatewords:8 }}</p>
+                              {% endif %}
+                          </div>
+                          <div class="flex items-center">
+                              <span class="text-sm font-medium text-gray-900 dark:text-white">₦{{ product.price }}</span>
+                              {% if product.is_out_of_stock %}
+                                  <button type="button" disabled class="ml-4 p-1.5 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm text-gray-400 bg-gray-200 dark:bg-gray-600 cursor-not-allowed opacity-50"
+                                          title="Out of Stock">
+                                      ✕
+                                  </button>
+                              {% else %}
+                                  <form method="POST" action="{% url 'giftshops:add_to_cart' product.id %}" class="ml-4 inline-block">
+                                      {% csrf_token %}
+                                      <button type="submit" class="p-1.5 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-green-50 dark:hover:bg-green-600 hover:text-green-600 dark:hover:text-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all"
+                                              title="Add to Cart">
+                                          +
+                                      </button>
+                                  </form>
+                              {% endif %}
+                          </div>
+                      </div>
+                  </li>
+                {% endif %}
+              {% empty %}
+                <li class="py-4 text-gray-500 dark:text-gray-400">No best sellers yet.</li>
+              {% endfor %}
+          </ul>
+      </div>
+  </div>
+
+</div>
+
+
+    <!-- Newsletter Signup -->
+    {% comment %} <div class="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-sm overflow-hidden">
+        <div class="p-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0 md:max-w-lg">
+                    <h3 class="text-xl font-bold text-white">Subscribe to Our Newsletter</h3>
+                    <p class="mt-2 text-blue-100">Get health tips, product updates, and exclusive offers delivered to your inbox.</p>
+                </div>
+                <div class="w-full md:w-auto">
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <input type="email" placeholder="Your email address" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent">
+                        <button class="inline-flex items-center justify-center px-6 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-indigo-700 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white transition-all">
+                            Subscribe
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+</div>
+
+<!-- Shopping Cart Sidebar (Hidden by default) -->
+<div id="shoppingCart" class="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-white dark:bg-gray-800 shadow-xl transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="flex flex-col h-full">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Your Cart</h3>
+            <button id="closeCart" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Cart Items -->
+        <div class="flex-1 overflow-y-auto p-6">
+            <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                <!-- Cart Item -->
+                <li class="py-4 flex">
+                    <div class="flex-shrink-0 h-20 w-20 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                        <img src="{% static 'images/vitamins&supplements2.webp' %}" alt="Vitamin D3 Supplement" class="h-full w-full object-cover">
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <div class="flex justify-between">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Vitamin D3 Supplement</h4>
+                            <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">120 tablets</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded">
+                                <button class="px-2 py-1 text-gray-600 dark:text-gray-400">-</button>
+                                <span class="px-2 text-gray-900 dark:text-white">1</span>
+                                <button class="px-2 py-1 text-gray-600 dark:text-gray-400">+</button>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$19.99</span>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Cart Item -->
+                <li class="py-4 flex">
+                    <div class="flex-shrink-0 h-20 w-20 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden">
+                        <img src="{% static 'images/medical_equipment2.jpg' %}" alt="Blood Pressure Monitor" class="h-full w-full object-cover">
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <div class="flex justify-between">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white">Blood Pressure Monitor</h4>
+                            <button class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Digital display, portable</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded">
+                                <button class="px-2 py-1 text-gray-600 dark:text-gray-400">-</button>
+                                <span class="px-2 text-gray-900 dark:text-white">1</span>
+                                <button class="px-2 py-1 text-gray-600 dark:text-gray-400">+</button>
+                            </div>
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$49.99</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Cart Footer -->
+        <div class="border-t border-gray-200 dark:border-gray-700 p-6">
+            <div class="flex justify-between text-base font-medium text-gray-900 dark:text-white">
+                <p>Subtotal</p>
+                <p>$69.98</p>
+            </div>
+            <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">Shipping and taxes calculated at checkout.</p>
+            <div class="mt-6">
+                <button class="w-full bg-blue-600 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Checkout
+                </button>
+            </div>
+            <div class="mt-6 flex justify-center text-sm text-center text-gray-500 dark:text-gray-400">
+                <p>
+                    or <button class="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-800 dark:hover:text-blue-300">Continue Shopping<span aria-hidden="true"> &rarr;</span></button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Categories Modal -->
+<div id="categoriesModal"
+     class="fixed inset-0 hidden z-50 items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-6xl p-8 relative overflow-y-auto max-h-[85vh]">
+    <div class="flex items-center justify-between mb-8">
+      <!-- Title -->
+      <h2 class="text-2xl text-gray-900 dark:text-white font-extrabold">All Categories</h2>
+
+      <!-- Close Button -->
+      <button type="button" id="closeCategoriesBtn"
+              class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 text-xl leading-none">
+        ✕
+      </button>
+    </div>
+
+    <!-- Render categories -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8">
+      {% for category in all_categories %}
+        <a href="{% url 'giftshops:category_products' category_id=category.id %}"
+           class="group block rounded-xl overflow-hidden border border-gray-200 dark:border-gray-600 hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-700 transform hover:scale-105">
+          {% if category.category_photo %}
+            <img src="{{ category.category_photo.url }}" alt="{{ category.name }}"
+                 class="h-32 w-full object-cover group-hover:scale-110 transition-transform duration-300">
+          {% else %}
+            <div class="h-32 flex items-center justify-center bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400">
+              <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+          {% endif %}
+          <div class="p-4 text-center">
+            <h3 class="text-sm font-medium text-gray-800 dark:text-gray-200 group-hover:text-indigo-600 line-clamp-2">
+              {{ category.name }}
+            </h3>
+          </div>
+        </a>
+      {% empty %}
+        <p class="col-span-full text-gray-500 dark:text-gray-400 text-center py-8">No categories available.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('categoriesModal');
+    const openBtn = document.getElementById('openCategoriesBtn');
+    const closeBtn = document.getElementById('closeCategoriesBtn');
+
+    function openModal() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');          // make it flex-centered
+      document.body.classList.add('overflow-hidden'); // prevent background scroll
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // click backdrop to close
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // ESC to close
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+<!-- Featured Products Modal -->
+<div id="featuredProductsModal"
+     class="fixed inset-0 hidden z-50 items-center justify-center bg-black bg-opacity-50 p-8">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-5xl p-6 relative overflow-y-auto max-h-[60vh]">
+    <div class="flex items-center justify-between mb-6">
+      <!-- Title -->
+      <h2 class="text-2xl text-gray-900 dark:text-white font-extrabold">All Featured Products</h2>
+
+      <!-- Close Button -->
+      <button type="button" id="closeFeaturedProductsBtn"
+              class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 text-xl leading-none">
+        ✕
+      </button>
+    </div>
+
+    <!-- Render all featured products -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for product in featured_products %}
+        {% if product.id %}
+          <div class="group bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg border border-gray-200 dark:border-gray-700 transition-all duration-300 overflow-hidden h-full flex flex-col cursor-pointer"
+               onclick="window.location.href='{% url 'giftshops:product_detail' pk=product.id %}'">
+            <!-- Image Container -->
+            <div class="relative h-48 w-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
+              {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}"
+                     class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300">
+              {% else %}
+                <div class="h-full w-full flex items-center justify-center bg-gray-200 dark:bg-gray-600">
+                  <svg class="h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                </div>
+              {% endif %}
+
+              <!-- Featured Badge -->
+              {% if product.is_featured %}
+              <div class="absolute top-3 left-3">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-yellow-500 text-white shadow-sm">
+                  ⭐ Featured
+                </span>
+              </div>
+              {% endif %}
+
+              <!-- Stock Status Badge -->
+              {% if product.is_out_of_stock %}
+              <div class="absolute top-3 right-3">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-red-500 text-white shadow-sm">
+                  🚫 Out of Stock
+                </span>
+              </div>
+              {% elif product.is_almost_out_of_stock %}
+              <div class="absolute top-3 right-3">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-500 text-white shadow-sm">
+                  ⚠️ Almost Out
+                </span>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Content Container -->
+            <div class="p-5 flex flex-col flex-grow">
+              <!-- Product Name -->
+              <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 line-clamp-2 text-center">
+                {{ product.name }}
+              </h3>
+
+              <!-- Category & Creator Info -->
+              <div class="flex flex-wrap items-center gap-2 mb-4">
+                <!-- Category Badge -->
+                {% if product.category %}
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                    {{ product.category.name }}
+                  </span>
+                {% endif %}
+
+                <!-- Creator Info -->
+                {% if product.created_by %}
+                  {% if product.created_by.userprofile.user_role == "INDIVIDUAL_PROVIDER" %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">Dr. {{ product.created_by.get_full_name|default:product.created_by.email }}</span>
+                  {% elif product.created_by.userprofile.user_role == "ORGANIZATION" %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">{{ product.created_by.organizationprofile.organization_name|default:product.created_by.email }}</span>
+                  {% else %}
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200">{{ product.created_by.get_full_name|default:product.created_by.email }}</span>
+                  {% endif %}
+                {% endif %}
+              </div>
+
+              <!-- Price & Action Icons -->
+              <div class="flex items-center justify-between mb-3">
+                <div class="flex flex-col">
+                  <p class="text-xl font-bold text-green-600 dark:text-green-400">${{ product.price }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                    {% if product.is_out_of_stock %}
+                      Out of stock
+                    {% elif product.is_almost_out_of_stock %}
+                      Only {{ product.stock_quantity }} left
+                    {% else %}
+                      {{ product.stock_quantity }} in stock
+                    {% endif %}
+                  </p>
+                </div>
+                <div class="flex items-center space-x-2" onclick="event.stopPropagation();">
+                  <!-- View Details Icon -->
+                  <a href="{% url 'giftshops:product_detail' pk=product.id %}"
+                     class="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105"
+                     title="View Details">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                  </a>
+                  <!-- Add to Cart Icon -->
+                  {% if product.is_out_of_stock %}
+                    <button type="button" disabled class="p-2 bg-gray-400 text-white rounded-lg cursor-not-allowed opacity-50"
+                            title="Out of Stock">
+                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
+                      </svg>
+                    </button>
+                  {% else %}
+                    <form method="POST" action="{% url 'giftshops:add_to_cart' product.id %}" class="inline-block">
+                      {% csrf_token %}
+                      <button type="submit" class="p-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105"
+                              title="Add to Cart">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m4.5-5a2 2 0 11-4 0 2 2 0 014 0zm6 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                      </button>
+                    </form>
+                  {% endif %}
+                </div>
+              </div>
+
+              <!-- Description -->
+              {% if product.description %}
+              <p class="text-sm text-gray-700 dark:text-gray-400 flex-grow mb-4 line-clamp-3">
+                {{ product.description|truncatewords:15 }}
+              </p>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      {% empty %}
+        <p class="text-gray-500 dark:text-gray-400 col-span-full text-center py-8">No featured products available.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const modal = document.getElementById('featuredProductsModal');
+    const openBtn = document.getElementById('openFeaturedProductsBtn');
+    const closeBtn = document.getElementById('closeFeaturedProductsBtn');
+
+    function openModal() {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');          // make it flex-centered
+      document.body.classList.add('overflow-hidden'); // prevent background scroll
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+    // click backdrop to close
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    // ESC to close
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
+  })();
+</script>
+
+{% comment %} Autocomplete functionality {% endcomment %}
+
+<script>
+  const input = document.getElementById('search-input');
+  const list = document.getElementById('autocomplete-list');
+  const loadingIndicator = document.getElementById('search-loading');
+  let currentSelection = -1;
+  let searchTimeout;
+
+  input.addEventListener('input', async function() {
+    const query = this.value.trim();
+    list.innerHTML = '';
+    currentSelection = -1;
+
+    // Clear previous timeout
+    if (searchTimeout) clearTimeout(searchTimeout);
+
+    if (!query || query.length < 2) {
+      loadingIndicator.classList.add('hidden');
+      return;
+    }
+
+    // Show loading indicator after 300ms delay
+    searchTimeout = setTimeout(() => {
+      loadingIndicator.classList.remove('hidden');
+    }, 300);
+
+    try {
+      // Make actual API call to get product suggestions
+      const response = await fetch(`{% url 'giftshops:product_autocomplete' %}?q=${encodeURIComponent(query)}`);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const suggestions = await response.json();
+
+      // Hide loading indicator
+      clearTimeout(searchTimeout);
+      loadingIndicator.classList.add('hidden');
+
+      if (suggestions.length === 0) {
+        const noResults = document.createElement('div');
+        noResults.classList.add('autocomplete-item', 'text-gray-500', 'italic');
+        noResults.innerHTML = `<span class="flex items-center"><svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>No products found for "${query}"</span>`;
+        list.appendChild(noResults);
+        return;
+      }
+
+      suggestions.slice(0, 6).forEach((item, index) => {
+        const div = document.createElement('div');
+        div.classList.add('autocomplete-item', 'flex', 'items-center', 'justify-between');
+        div.setAttribute('data-index', index);
+
+        // The backend returns objects with 'id' and 'name' properties
+        const productName = item.name;
+
+        // Highlight matching text
+        const regex = new RegExp(`(${query})`, 'gi');
+        const highlightedText = productName.replace(regex, '<strong class="text-blue-600 dark:text-blue-400">$1</strong>');
+
+        div.innerHTML = `
+          <span class="flex items-center">
+            ${highlightedText}
+          </span>
+          <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        `;
+
+        div.onclick = () => {
+          input.value = productName;
+          list.innerHTML = '';
+          currentSelection = -1;
+        };
+
+        list.appendChild(div);
+      });
+    } catch (err) {
+      console.error('Autocomplete error:', err);
+
+      // Fallback: Show error message in autocomplete
+      clearTimeout(searchTimeout);
+      loadingIndicator.classList.add('hidden');
+
+      // Show error message in autocomplete
+      const errorDiv = document.createElement('div');
+      errorDiv.classList.add('autocomplete-item', 'text-red-500', 'italic');
+      errorDiv.innerHTML = `<span class="flex items-center"><svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>Search temporarily unavailable</span>`;
+      list.appendChild(errorDiv);
+    }
+  });
+
+  // Handle keyboard navigation
+  input.addEventListener('keydown', function(e) {
+    const items = list.querySelectorAll('.autocomplete-item:not(.text-gray-500):not(.text-red-500)');
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      currentSelection = (currentSelection + 1) % items.length;
+      updateSelection(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      currentSelection = currentSelection <= 0 ? items.length - 1 : currentSelection - 1;
+      updateSelection(items);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (currentSelection >= 0 && items[currentSelection]) {
+        // Extract just the product name from the highlighted item
+        const selectedItem = items[currentSelection];
+        const productNameElement = selectedItem.querySelector('span');
+        if (productNameElement) {
+          input.value = productNameElement.textContent.split('$')[0].trim(); // Remove price if present
+        }
+        list.innerHTML = '';
+        currentSelection = -1;
+      }
+    } else if (e.key === 'Escape') {
+      list.innerHTML = '';
+      currentSelection = -1;
+    }
+  });
+
+  function updateSelection(items) {
+    items.forEach((item, index) => {
+      if (index === currentSelection) {
+        item.classList.add('bg-blue-100', 'dark:bg-blue-900');
+      } else {
+        item.classList.remove('bg-blue-100', 'dark:bg-blue-900');
+      }
+    });
+  }
+
+  // Close the dropdown if clicked outside
+  document.addEventListener('click', function(e) {
+    if (e.target !== input && !list.contains(e.target)) {
+      list.innerHTML = '';
+      currentSelection = -1;
+    }
+  });
+
+  // Form submission handling
+  const searchForm = input.closest('form');
+  if (searchForm) {
+    searchForm.addEventListener('submit', function(e) {
+      list.innerHTML = '';
+      currentSelection = -1;
+    });
+  }
+
+  // Preserve form state from URL parameters
+  function preserveFormState() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Set form values from URL parameters
+    const searchInput = document.getElementById('search-input');
+    const categorySelect = document.querySelector('select[name="category"]');
+    const organizationSelect = document.querySelector('select[name="organisation"]');
+    const priceRangeSelect = document.querySelector('select[name="price_range"]');
+    const sortSelect = document.querySelector('select[name="sort"]');
+
+    if (urlParams.get('q')) searchInput.value = urlParams.get('q');
+    if (urlParams.get('category')) categorySelect.value = urlParams.get('category');
+    if (urlParams.get('organisation')) organizationSelect.value = urlParams.get('organisation');
+    if (urlParams.get('price_range')) priceRangeSelect.value = urlParams.get('price_range');
+    if (urlParams.get('sort')) sortSelect.value = urlParams.get('sort');
+  }
+
+  // Initialize form state on page load
+  document.addEventListener('DOMContentLoaded', preserveFormState);
+
+  // Add real-time filter functionality
+  function setupFilterHandlers() {
+    const filterSelects = document.querySelectorAll('select[name="category"], select[name="organisation"], select[name="price_range"], select[name="sort"]');
+
+    filterSelects.forEach(select => {
+      select.addEventListener('change', function() {
+        // Auto-submit form when filters change (optional)
+        // this.form.submit();
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', setupFilterHandlers);
+</script>
+
+<!-- Toast Notification Container -->
+<div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+<!-- Add to Cart Functionality -->
+<script>
+  // Toast notification function
+  function showToast(message, type = 'success') {
+    const toastContainer = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+
+    const bgColor = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
+
+    toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 ease-in-out flex items-center space-x-2`;
+
+    toast.innerHTML = `
+      <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        ${type === 'success' ?
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>' :
+          '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>'
+        }
+      </svg>
+      <span class="font-medium">${message}</span>
+      <button onclick="this.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    `;
+
+    toastContainer.appendChild(toast);
+
+    // Slide in
+    setTimeout(() => {
+      toast.classList.remove('translate-x-full');
+    }, 100);
+
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+      toast.classList.add('translate-x-full');
+      setTimeout(() => {
+        if (toast.parentElement) {
+          toast.remove();
+        }
+      }, 300);
+    }, 4000);
+  }
+
+  // Add to cart functionality is now handled by Django forms
+  // This JavaScript is kept for potential future AJAX implementations
+
+  // Initialize any remaining functionality when page loads
+  document.addEventListener('DOMContentLoaded', function() {
+    // Future enhancements can be added here
+    console.log('Giftshop page loaded successfully');
+  });
+</script>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

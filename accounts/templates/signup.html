@@ -1,0 +1,1994 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | UrbanMD Health Network</title>
+    <link rel="stylesheet" href="{% static 'src/styles.css' %}">
+
+    <!-- Preconnect to CDN for faster resource loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+    <!-- Intl Tel Input CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/css/intlTelInput.css">
+
+    <!-- Critical CSS -->
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-light-blue: #0ea5e9;
+            --primary-gradient: linear-gradient(90deg, #1e3a8a 0%, #0ea5e9 100%);
+            --secondary-gradient: linear-gradient(90deg, rgba(23, 63, 158, 0.05) 0%, rgba(0, 182, 216, 0.05) 100%);
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --error-color: #ef4444;
+            --success-color: #10b981;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+            opacity: 1;
+            transition: opacity 0.4s ease;
+        }
+
+        .dark {
+            color-scheme: dark;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --bg-light: #1f2937;
+            --card-bg: #111827;
+            --border-color: #374151;
+        }
+
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .dark .page-loader {
+            background-color: #1f2937;
+        }
+
+        .page-loader.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-pulse {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+        }
+
+        .form-container {
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .decoration {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: var(--secondary-gradient);
+            z-index: -1;
+            animation: pulse 6s infinite ease-in-out;
+        }
+
+        .gradient-text {
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Replace the current btn-pulse styles with these */
+        .btn-pulse {
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        /* Add the bounce animation */
+        @keyframes buttonBounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            20% {
+                transform: scale(1.03);
+            }
+            40% {
+                transform: scale(0.97);
+            }
+            60% {
+                transform: scale(1.01);
+            }
+            80% {
+                transform: scale(0.99);
+            }
+        }
+
+        .btn-pulse.bouncing {
+            animation: buttonBounce 0.6s;
+        }
+
+        /* User type selector styles */
+        .user-type-selector {
+            display: flex;
+            border-radius: 999px;
+            background-color: #f3f4f6;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dark .user-type-selector {
+            background-color: #374151;
+        }
+
+        .selector-option {
+            flex: 1;
+            text-align: center;
+            padding: 0.4rem 0.5rem;
+            font-weight: 500;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* .selector-option.active {
+            background-color: #fff;
+            color: var(--primary-blue);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark .selector-option.active {
+            background-color: #1f2937;
+            color: var(--primary-light-blue);
+        } */
+
+        /* Form step indicator */
+        .steps-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .steps-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            height: 2px;
+            width: 100%;
+            background-color: var(--border-color);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .dark .step {
+            background-color: #1f2937;
+            border-color: #4b5563;
+        }
+
+        .step.active {
+            background-color: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+
+        .step.completed {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        /* Form field styles */
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .field-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background-color: white;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .dark .field-input {
+            background-color: #111827;
+            color: #e5e7eb;
+        }
+
+        .field-input:focus {
+            outline: none;
+            border-color: var(--primary-light-blue);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
+        }
+
+        .field-input.error {
+            border-color: var(--error-color);
+        }
+
+        .field-error {
+            color: var(--error-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Form-level error alert */
+        .form-errors {
+            background-color: #fee;
+            border: 1px solid #fcc;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #c00;
+        }
+
+        .form-errors h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .form-errors ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .form-errors li {
+            margin-bottom: 0.25rem;
+        }
+
+        /* Success alert */
+        .success-alert {
+            background-color: #d1fae5;
+            border: 1px solid #6ee7b7;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            color: #065f46;
+        }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background-color: #f3f4f6;
+        }
+
+        .dark .btn-outline:hover {
+            background-color: #374151;
+        }
+
+        .btn-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+        }
+
+        .btn-gradient:hover {
+            opacity: 0.9;
+        }
+
+        /* Enhanced form slide animations - without container animation */
+        .form-slide {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
+            transform: translateX(0);
+            position: relative;
+        }
+
+        .form-slide.hidden {
+            display: block !important;
+            opacity: 0;
+            transform: translateX(40px);
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .form-slide.entering {
+            animation: slideInContent 0.5s forwards;
+        }
+
+        .form-slide.exiting {
+            animation: slideOutContent 0.3s forwards;
+        }
+
+        @keyframes slideInContent {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideOutContent {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+        }
+
+        /* User type selector animations */
+        /* Bouncy effect */
+        /* .selector-option {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            z-index: 2;
+            border: 1px red solid;
+        } */
+
+        /* .selector-option.active {
+            transform: scale(1.05);
+        }
+
+        .selector-option:not(.active) {
+            transform: scale(1);
+        } */
+
+        /* Custom animation for the selector background */
+        .user-type-selector {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .selector-background {
+            position: absolute;
+            height: calc(100% - 16px);
+            background-color: white;
+            border-radius: 99rem;
+            top: 8px;
+            transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+        }
+
+        .dark .selector-background {
+            background-color: #1f2937;
+        }
+
+        /* IntlTel Input custom styles */
+        .iti {
+            width: 100%;
+        }
+
+        .iti__country-list {
+            background-color: white;
+            color: black;
+        }
+
+        .dark .iti__country-list {
+            background-color: #1f2937;
+            color: white;
+        }
+
+        .iti__search-input {
+            background-color: white;
+            color: black;
+            padding: 0.5rem;
+        }
+
+        .dark .iti__search-input {
+            background-color: #111827;
+            color: white;
+        }
+
+        .iti__search-input:focus {
+            outline: none;
+        }
+
+        .dark .iti__country-name,
+        .dark .iti__dial-code {
+            color: white;
+        }
+
+        .iti__flag {
+            background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/img/flags.png");
+        }
+
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .iti__flag {
+                background-image: url("https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/img/flags@2x.png");
+            }
+        }
+
+        /* Password visibility toggle */
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive utilities */
+        @media (max-width: 640px) {
+            .hidden-sm {
+                display: none;
+            }
+        }
+
+        @media (min-width: 641px) {
+            .hidden-md {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <div class="loader-pulse"></div>
+    </div>
+
+    <div class="min-h-screen w-full flex flex-col justify-center items-center px-4 py-12">
+        <!-- Header with Logo -->
+        <div class="w-full mb-8 flex justify-center">
+            <a href="/">
+                <img src="{% static 'images/urbanmd_logo.png' %}" alt="UrbanMD Health Network Logo" class="h-14">
+            </a>
+        </div>
+
+        <!-- User Type Toggle -->
+        <div class="w-full max-w-4xl mb-4 text-center">
+            <h1 class="text-3xl font-bold mb-2">Create Account</h1>
+            <p class="text-xl gradient-text font-semibold mb-6">Join our healthcare community</p>
+
+            <!-- Django Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'error' %}form-errors{% else %}success-alert{% endif %} max-w-lg mx-auto mb-4">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="user-type-selector mx-auto max-w-lg">
+                <div class="selector-option {% if not request.POST.user_type or request.POST.user_type == 'patient' %}active{% endif %}" data-type="patient" id="patient-option">
+                    <span>Patient</span>
+                </div>
+                <div class="selector-option {% if request.POST.user_type == 'physician' %}active{% endif %}" data-type="physician" id="physician-option">
+                    <span>Provider</span>
+                </div>
+                <div class="selector-option {% if request.POST.user_type == 'provider' %}active{% endif %}" data-type="provider" id="provider-option">
+                    <span>Organization/Brands</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="w-full max-w-4xl bg-white dark:bg-gray-800 form-container p-6 md:p-8">
+            <div class="relative overflow-hidden">
+                <!-- Patient Registration Form -->
+                <form id="patient-form" class="form-slide {% if not request.POST.user_type or request.POST.user_type == 'patient' %}active{% else %}hidden{% endif %}" method="post" action="{% url 'accounts:register_user' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_type" value="patient">
+
+                    <!-- Django form errors -->
+                    {% if form.errors %}
+                        {% if not request.POST.user_type or request.POST.user_type == 'patient' %}
+                            <div class="form-errors">
+                                <h4>Please correct the following errors:</h4>
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ field|capfirst }}: {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="steps-indicator">
+                        <div class="step active" data-step="1">1</div>
+                        <div class="step" data-step="2">2</div>
+                    </div>
+
+                    <!-- Step 1: Basic Information -->
+                    <div class="form-step active" id="patient-step-1">
+                        <h3 class="text-xl font-semibold mb-4">Personal Information</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="field-group">
+                                <label for="patient_first_name" class="field-label">First Name</label>
+                                <input type="text" id="patient_first_name" name="first_name"
+                                       class="field-input {% if form.first_name.errors %}error{% endif %}"
+                                       value="{{ request.POST.first_name|default:'' }}" required>
+                                <div class="field-error">
+                                    {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="patient_last_name" class="field-label">Last Name</label>
+                                <input type="text" id="patient_last_name" name="last_name"
+                                       class="field-input {% if form.last_name.errors %}error{% endif %}"
+                                       value="{{ request.POST.last_name|default:'' }}" required>
+                                <div class="field-error">
+                                    {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="patient_email" class="field-label">Email Address</label>
+                            <input type="email" id="patient_email" name="email"
+                                   class="field-input {% if form.email.errors %}error{% endif %}"
+                                   value="{{ request.POST.email|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="patient_phone" class="field-label">Phone Number</label>
+                            <input type="tel" id="patient_phone" name="phone_number"
+                                   class="field-input {% if form.phone_number.errors %}error{% endif %}"
+                                   value="{{ request.POST.phone_number|default:'' }}" required>
+                            <input type="hidden" id="patient_phone_hidden" name="phone_full">
+                            <div class="field-error">
+                                {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="button" class="btn btn-gradient next-step" data-form="patient" data-current="1">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Account Security -->
+                    <div class="form-step hidden" id="patient-step-2">
+                        <h3 class="text-xl font-semibold mb-4">Create Password</h3>
+
+                        <div class="field-group">
+                            <label for="patient_password" class="field-label">Password</label>
+                            <div class="relative">
+                                <input type="password" id="patient_password" name="password1"
+                                       class="field-input {% if form.password1.errors %}error{% endif %}" required>
+                                <span class="password-toggle" data-target="patient_password">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Password must be at least 8 characters with letters and numbers.</p>
+                            <div class="field-error">
+                                {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="patient_password_confirm" class="field-label">Confirm Password</label>
+                            <div class="relative">
+                                <input type="password" id="patient_password_confirm" name="password2"
+                                       class="field-input {% if form.password2.errors %}error{% endif %}" required>
+                                <span class="password-toggle" data-target="patient_password_confirm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="field-error">
+                                {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="agree_terms" class="mr-2"
+                                       {% if request.POST.agree_terms %}checked{% endif %} required>
+                                <span class="text-sm">
+                                    I agree to the <a href="#" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>
+                                </span>
+                            </label>
+                            <div class="field-error"></div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="patient" data-current="2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="submit" class="btn btn-gradient">
+                                Complete Registration
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Physician Registration Form -->
+                <form id="physician-form" class="form-slide {% if request.POST.user_type == 'physician' %}active{% else %}hidden{% endif %}" method="post" action="{% url 'accounts:register_user' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_type" value="physician">
+
+                    <!-- Django form errors -->
+                    {% if form.errors %}
+                        {% if request.POST.user_type == 'physician' %}
+                            <div class="form-errors">
+                                <h4>Please correct the following errors:</h4>
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ field|capfirst }}: {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <div class="steps-indicator">
+                        <div class="step active" data-step="1">1</div>
+                        <div class="step" data-step="2">2</div>
+                        <div class="step" data-step="3">3</div>
+                        <div class="step" data-step="4">4</div>
+                    </div>
+
+                    <!-- Step 1: Personal Information -->
+                    <div class="form-step active" id="physician-step-1">
+                        <h3 class="text-xl font-semibold mb-4">Personal Information</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="field-group">
+                                <label for="physician_first_name" class="field-label">First Name</label>
+                                <input type="text" id="physician_first_name" name="first_name"
+                                       class="field-input {% if form.first_name.errors %}error{% endif %}"
+                                       value="{{ request.POST.first_name|default:'' }}" required>
+                                <div class="field-error">
+                                    {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="physician_last_name" class="field-label">Last Name</label>
+                                <input type="text" id="physician_last_name" name="last_name"
+                                       class="field-input {% if form.last_name.errors %}error{% endif %}"
+                                       value="{{ request.POST.last_name|default:'' }}" required>
+                                <div class="field-error">
+                                    {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_email" class="field-label">Email Address</label>
+                            <input type="email" id="physician_email" name="email"
+                                   class="field-input {% if form.email.errors %}error{% endif %}"
+                                   value="{{ request.POST.email|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_phone" class="field-label">Phone Number</label>
+                            <input type="tel" id="physician_phone" name="phone_number"
+                                   class="field-input {% if form.phone_number.errors %}error{% endif %}"
+                                   value="{{ request.POST.phone_number|default:'' }}" required>
+                            <input type="hidden" id="physician_phone_hidden" name="phone_full">
+                            <div class="field-error">
+                                {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="button" class="btn btn-gradient next-step" data-form="physician" data-current="1">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Professional Information -->
+                    <div class="form-step hidden" id="physician-step-2">
+                        <h3 class="text-xl font-semibold mb-4">Professional Information</h3>
+
+                        <div class="field-group">
+                            <label for="physician_provider_type" class="field-label">Provider Type</label>
+                            <select id="physician_provider_type" name="provider_type"
+                                    class="field-input {% if form.provider_type.errors %}error{% endif %}" required>
+                                <option value="">Select your provider type</option>
+                                <option value="PHYSICIAN" {% if request.POST.provider_type == 'PHYSICIAN' %}selected{% endif %}>Physician</option>
+                                <option value="NURSE_PRACTITIONER" {% if request.POST.provider_type == 'NURSE_PRACTITIONER' %}selected{% endif %}>Nurse Practitioner</option>
+                                <option value="PHYSICIAN_ASSISTANT" {% if request.POST.provider_type == 'PHYSICIAN_ASSISTANT' %}selected{% endif %}>Physician Assistant</option>
+                                <option value="THERAPIST" {% if request.POST.provider_type == 'THERAPIST' %}selected{% endif %}>Therapist</option>
+                                <option value="PHARMACIST" {% if request.POST.provider_type == 'PHARMACIST' %}selected{% endif %}>Pharmacist</option>
+                                <option value="DENTIST" {% if request.POST.provider_type == 'DENTIST' %}selected{% endif %}>Dentist</option>
+                                <option value="PSYCHOLOGIST" {% if request.POST.provider_type == 'PSYCHOLOGIST' %}selected{% endif %}>Psychologist</option>
+                                <option value="OTHER" {% if request.POST.provider_type == 'OTHER' %}selected{% endif %}>Other Healthcare Professional</option>
+                            </select>
+                            <div class="field-error">
+                                {% for error in form.provider_type.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_specialty" class="field-label">Medical Specialty</label>
+                            <select id="physician_specialty" name="specialty"
+                                    class="field-input {% if form.specialty.errors %}error{% endif %}" required>
+                                <option value="">Select your specialty</option>
+                                <option value="primary_care" {% if request.POST.specialty == 'primary_care' %}selected{% endif %}>Primary Care</option>
+                                <option value="cardiology" {% if request.POST.specialty == 'cardiology' %}selected{% endif %}>Cardiology</option>
+                                <option value="dermatology" {% if request.POST.specialty == 'dermatology' %}selected{% endif %}>Dermatology</option>
+                                <option value="orthopedics" {% if request.POST.specialty == 'orthopedics' %}selected{% endif %}>Orthopedics</option>
+                                <option value="neurology" {% if request.POST.specialty == 'neurology' %}selected{% endif %}>Neurology</option>
+                                <option value="pediatrics" {% if request.POST.specialty == 'pediatrics' %}selected{% endif %}>Pediatrics</option>
+                                <option value="psychiatry" {% if request.POST.specialty == 'psychiatry' %}selected{% endif %}>Psychiatry</option>
+                                <option value="obgyn" {% if request.POST.specialty == 'obgyn' %}selected{% endif %}>Obstetrics & Gynecology</option>
+                                <option value="ophthalmology" {% if request.POST.specialty == 'ophthalmology' %}selected{% endif %}>Ophthalmology</option>
+                                <option value="other" {% if request.POST.specialty == 'other' %}selected{% endif %}>Other</option>
+                            </select>
+                            <div class="field-error">
+                                {% for error in form.specialty.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_license" class="field-label">Medical License Number</label>
+                            <input type="text" id="physician_license" name="license_number"
+                                   class="field-input {% if form.license_number.errors %}error{% endif %}"
+                                   value="{{ request.POST.license_number|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.license_number.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_npi" class="field-label">NPI Number</label>
+                            <input type="text" id="physician_npi" name="npi_number"
+                                   class="field-input {% if form.npi_number.errors %}error{% endif %}"
+                                   value="{{ request.POST.npi_number|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.npi_number.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_experience" class="field-label">Years of Experience</label>
+                            <input type="number" id="physician_experience" name="years_experience"
+                                   class="field-input {% if form.years_experience.errors %}error{% endif %}"
+                                   value="{{ request.POST.years_experience|default:'' }}" min="0" required>
+                            <div class="field-error">
+                                {% for error in form.years_experience.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="physician" data-current="2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="button" class="btn btn-gradient next-step" data-form="physician" data-current="2">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Practice Information -->
+                    <div class="form-step hidden" id="physician-step-3">
+                        <h3 class="text-xl font-semibold mb-4">Practice Information</h3>
+
+                        <div class="field-group">
+                            <label for="physician_practice_name" class="field-label">Practice Facility Name</label>
+                            <input type="text" id="physician_practice_name" name="practice_name"
+                                   class="field-input {% if form.practice_name.errors %}error{% endif %}"
+                                   value="{{ request.POST.practice_name|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.practice_name.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_location" class="field-label">Practice Address</label>
+                            <input type="text" id="physician_location"
+                                   class="field-input {% if form.address.errors %}error{% endif %}"
+                                   value="{{ request.POST.address|default:'' }}" placeholder="Enter your practice address" required>
+                            <div class="field-error">
+                                {% for error in form.address.errors %}{{ error }}{% endfor %}
+                            </div>
+
+                            <!-- Hidden fields for location components -->
+                            <input type="hidden" id="physician_address" name="address" value="{{ request.POST.address|default:'' }}">
+                            <input type="hidden" id="physician_city" name="city" value="{{ request.POST.city|default:'' }}">
+                            <input type="hidden" id="physician_state" name="state" value="{{ request.POST.state|default:'' }}">
+                            <input type="hidden" id="physician_postal_code" name="postal_code" value="{{ request.POST.postal_code|default:'' }}">
+                            <input type="hidden" id="physician_country" name="country" value="{{ request.POST.country|default:'' }}">
+                            <input type="hidden" id="physician_latitude" name="latitude" value="{{ request.POST.latitude|default:'' }}">
+                            <input type="hidden" id="physician_longitude" name="longitude" value="{{ request.POST.longitude|default:'' }}">
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_insurance" class="field-label">Insurance Plan</label>
+                            <select id="physician_insurance" name="insurance"
+                                    class="field-input {% if form.insurance.errors %}error{% endif %}" required>
+                                <option value="">Select Insurance</option>
+                                <option value="medicare" {% if request.POST.insurance == 'medicare' %}selected{% endif %}>Medicare</option>
+                                <option value="medicaid" {% if request.POST.insurance == 'medicaid' %}selected{% endif %}>Medicaid</option>
+                                <option value="blue_cross" {% if request.POST.insurance == 'blue_cross' %}selected{% endif %}>Blue Cross Blue Shield</option>
+                                <option value="aetna" {% if request.POST.insurance == 'aetna' %}selected{% endif %}>Aetna</option>
+                                <option value="cigna" {% if request.POST.insurance == 'cigna' %}selected{% endif %}>Cigna</option>
+                                <option value="humana" {% if request.POST.insurance == 'humana' %}selected{% endif %}>Humana</option>
+                                <option value="united" {% if request.POST.insurance == 'united' %}selected{% endif %}>UnitedHealthcare</option>
+                                <option value="other" {% if request.POST.insurance == 'other' %}selected{% endif %}>Other</option>
+                            </select>
+                            <div class="field-error">
+                                {% for error in form.insurance.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="physician" data-current="3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="button" class="btn btn-gradient next-step" data-form="physician" data-current="3">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Account Security -->
+                    <div class="form-step hidden" id="physician-step-4">
+                        <h3 class="text-xl font-semibold mb-4">Create Password</h3>
+
+                        <div class="field-group">
+                            <label for="physician_password" class="field-label">Password</label>
+                            <div class="relative">
+                                <input type="password" id="physician_password" name="password1"
+                                       class="field-input {% if form.password1.errors %}error{% endif %}" required>
+                                <span class="password-toggle" data-target="physician_password">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Password must be at least 8 characters with letters and numbers.</p>
+                            <div class="field-error">
+                                {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="physician_password_confirm" class="field-label">Confirm Password</label>
+                            <div class="relative">
+                                <input type="password" id="physician_password_confirm" name="password2"
+                                       class="field-input {% if form.password2.errors %}error{% endif %}" required>
+                                <span class="password-toggle" data-target="physician_password_confirm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="field-error">
+                                {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="agree_terms" class="mr-2"
+                                       {% if request.POST.agree_terms %}checked{% endif %} required>
+                                <span class="text-sm">
+                                    I agree to the <a href="#" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>
+                                </span>
+                            </label>
+                            <div class="field-error"></div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="physician" data-current="4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="submit" class="btn btn-gradient">
+                                Complete Registration
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Healthcare Provider Registration Form -->
+                <form id="provider-form" class="form-slide {% if request.POST.user_type == 'provider' %}active{% else %}hidden{% endif %}" method="post" action="{% url 'accounts:register_user' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_type" value="provider">
+
+                    <!-- Django form errors -->
+                    {% if form.errors and request.POST.user_type == 'provider' %}
+                        <div class="form-errors">
+                            <h4>Please correct the following errors:</h4>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li>{{ field|capfirst }}: {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <div class="steps-indicator">
+                        <div class="step active" data-step="1">1</div>
+                        <div class="step" data-step="2">2</div>
+                        <div class="step" data-step="3">3</div>
+                        <div class="step" data-step="4">4</div>
+                    </div>
+
+                    <!-- Step 1: Basic Information -->
+                    <div class="form-step active" id="provider-step-1">
+                        <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="field-group">
+                                <label for="provider_first_name" class="field-label">Contact First Name</label>
+                                <input type="text" id="provider_first_name" name="first_name"
+                                       class="field-input {% if form.first_name.errors %}error{% endif %}"
+                                       value="{{ request.POST.first_name|default:'' }}" required>
+                                <div class="field-error">
+                                    {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            </div>
+
+                            <div class="field-group">
+                                <label for="provider_last_name" class="field-label">Contact Last Name</label>
+                                <input type="text" id="provider_last_name" name="last_name"
+                                       class="field-input {% if form.last_name.errors %}error{% endif %}"
+                                       value="{{ request.POST.last_name|default:'' }}" required>
+                                <div class="field-error">
+                                    {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_email" class="field-label">Email Address</label>
+                            <input type="email" id="provider_email" name="email"
+                                   class="field-input {% if form.email.errors %}error{% endif %}"
+                                   value="{{ request.POST.email|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_phone" class="field-label">Phone Number</label>
+                            <input type="tel" id="provider_phone" name="phone_number"
+                                   class="field-input {% if form.phone_number.errors %}error{% endif %}"
+                                   value="{{ request.POST.phone_number|default:'' }}" required>
+                            <input type="hidden" id="provider_phone_hidden" name="phone_full">
+                            <div class="field-error">
+                                {% for error in form.phone_number.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button type="button" class="btn btn-gradient next-step" data-form="provider" data-current="1">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Organization Information -->
+                    <div class="form-step hidden" id="provider-step-2">
+                        <h3 class="text-xl font-semibold mb-4">Organization Information</h3>
+
+                        <div class="field-group">
+                            <label for="provider_org_name" class="field-label">Organization Name</label>
+                            <input type="text" id="provider_org_name" name="organization_name"
+                                   class="field-input {% if form.organization_name.errors %}error{% endif %}"
+                                   value="{{ request.POST.organization_name|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.organization_name.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_org_type" class="field-label">Organization Type</label>
+                            <select id="provider_org_type" name="organization_type"
+                                    class="field-input {% if form.organization_type.errors %}error{% endif %}" required>
+                                <option value="">Select organization type</option>
+                                <option value="HOSPITAL" {% if request.POST.organization_type == 'HOSPITAL' %}selected{% endif %}>Hospital</option>
+                                <option value="CLINIC" {% if request.POST.organization_type == 'CLINIC' %}selected{% endif %}>Clinic</option>
+                                <option value="URGENT_CARE" {% if request.POST.organization_type == 'URGENT_CARE' %}selected{% endif %}>Urgent Care</option>
+                                <option value="IMAGING_CENTER" {% if request.POST.organization_type == 'IMAGING_CENTER' %}selected{% endif %}>Imaging Center</option>
+                                <option value="LABORATORY" {% if request.POST.organization_type == 'LABORATORY' %}selected{% endif %}>Laboratory</option>
+                                <option value="PHARMACY" {% if request.POST.organization_type == 'PHARMACY' %}selected{% endif %}>Pharmacy</option>
+                                <option value="MENTAL_HEALTH_CENTER" {% if request.POST.organization_type == 'MENTAL_HEALTH_CENTER' %}selected{% endif %}>Mental Health Center</option>
+                                <option value="REHABILITATION_CENTER" {% if request.POST.organization_type == 'REHABILITATION_CENTER' %}selected{% endif %}>Rehabilitation Center</option>
+                                <option value="NURSING_HOME" {% if request.POST.organization_type == 'NURSING_HOME' %}selected{% endif %}>Nursing Home</option>
+                                <option value="MEDICAL_GROUP" {% if request.POST.organization_type == 'MEDICAL_GROUP' %}selected{% endif %}>Medical Group</option>
+                                <option value="OTHER" {% if request.POST.organization_type == 'OTHER' %}selected{% endif %}>Other</option>
+                            </select>
+                            <div class="field-error">
+                                {% for error in form.organization_type.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_tax_id" class="field-label">Tax ID Number</label>
+                            <input type="text" id="provider_tax_id" name="tax_id"
+                                   class="field-input {% if form.tax_id.errors %}error{% endif %}"
+                                   value="{{ request.POST.tax_id|default:'' }}" required>
+                            <div class="field-error">
+                                {% for error in form.tax_id.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="provider" data-current="2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="button" class="btn btn-gradient next-step" data-form="provider" data-current="2">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Facility Information -->
+                    <div class="form-step hidden" id="provider-step-3">
+                        <h3 class="text-xl font-semibold mb-4">Facility Information</h3>
+
+                        <div class="field-group">
+                            <label for="provider_location" class="field-label">Facility Address</label>
+                            <input type="text" id="provider_location"
+                                   class="field-input {% if form.address.errors %}error{% endif %}"
+                                   value="{{ request.POST.address|default:'' }}" placeholder="Enter your facility address" required>
+                            <div class="field-error">
+                                {% for error in form.address.errors %}{{ error }}{% endfor %}
+                            </div>
+
+                            <!-- Hidden fields for location components -->
+                            <input type="hidden" id="provider_address" name="address" value="{{ request.POST.address|default:'' }}">
+                            <input type="hidden" id="provider_city" name="city" value="{{ request.POST.city|default:'' }}">
+                            <input type="hidden" id="provider_state" name="state" value="{{ request.POST.state|default:'' }}">
+                            <input type="hidden" id="provider_postal_code" name="postal_code" value="{{ request.POST.postal_code|default:'' }}">
+                            <input type="hidden" id="provider_country" name="country" value="{{ request.POST.country|default:'' }}">
+                            <input type="hidden" id="provider_latitude" name="latitude" value="{{ request.POST.latitude|default:'' }}">
+                            <input type="hidden" id="provider_longitude" name="longitude" value="{{ request.POST.longitude|default:'' }}">
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_services" class="field-label">Services Offered</label>
+                            <select id="provider_services" name="services_offered"
+                                    class="field-input {% if form.services_offered.errors %}error{% endif %}" multiple required>
+                                <option value="primary_care" {% if 'primary_care' in request.POST.getlist.services_offered %}selected{% endif %}>Primary Care</option>
+                                <option value="specialty_care" {% if 'specialty_care' in request.POST.getlist.services_offered %}selected{% endif %}>Specialty Care</option>
+                                <option value="urgent_care" {% if 'urgent_care' in request.POST.getlist.services_offered %}selected{% endif %}>Urgent Care</option>
+                                <option value="emergency" {% if 'emergency' in request.POST.getlist.services_offered %}selected{% endif %}>Emergency Services</option>
+                                <option value="diagnostics" {% if 'diagnostics' in request.POST.getlist.services_offered %}selected{% endif %}>Diagnostic Services</option>
+                                <option value="lab" {% if 'lab' in request.POST.getlist.services_offered %}selected{% endif %}>Laboratory Services</option>
+                                <option value="imaging" {% if 'imaging' in request.POST.getlist.services_offered %}selected{% endif %}>Imaging</option>
+                                <option value="pharmacy" {% if 'pharmacy' in request.POST.getlist.services_offered %}selected{% endif %}>Pharmacy</option>
+                                <option value="physical_therapy" {% if 'physical_therapy' in request.POST.getlist.services_offered %}selected{% endif %}>Physical Therapy</option>
+                                <option value="other" {% if 'other' in request.POST.getlist.services_offered %}selected{% endif %}>Other</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl (or Cmd) to select multiple options.</p>
+                            <div class="field-error">
+                                {% for error in form.services_offered.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_insurance" class="field-label">Insurance Plans Accepted</label>
+                            <select id="provider_insurance" name="insurance_accepted"
+                                    class="field-input {% if form.insurance_accepted.errors %}error{% endif %}" multiple required>
+                                <option value="medicare" {% if 'medicare' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Medicare</option>
+                                <option value="medicaid" {% if 'medicaid' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Medicaid</option>
+                                <option value="blue_cross" {% if 'blue_cross' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Blue Cross Blue Shield</option>
+                                <option value="aetna" {% if 'aetna' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Aetna</option>
+                                <option value="cigna" {% if 'cigna' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Cigna</option>
+                                <option value="humana" {% if 'humana' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Humana</option>
+                                <option value="united" {% if 'united' in request.POST.getlist.insurance_accepted %}selected{% endif %}>UnitedHealthcare</option>
+                                <option value="other" {% if 'other' in request.POST.getlist.insurance_accepted %}selected{% endif %}>Other</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">Hold Ctrl (or Cmd) to select multiple options.</p>
+                            <div class="field-error">
+                                {% for error in form.insurance_accepted.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="provider" data-current="3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="button" class="btn btn-gradient next-step" data-form="provider" data-current="3">
+                                Continue
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Account Security -->
+                    <div class="form-step hidden" id="provider-step-4">
+                        <h3 class="text-xl font-semibold mb-4">Create Password</h3>
+
+                        <div class="field-group">
+                            <label for="provider_password" class="field-label">Password</label>
+                            <div class="relative">
+                                <input type="password" id="provider_password" name="password1"
+                                       class="field-input {% if form.password1.errors %}error{% endif %}" required>
+                                <span class="password-toggle" data-target="provider_password">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Password must be at least 8 characters with letters and numbers.</p>
+                            <div class="field-error">
+                                {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="provider_password_confirm" class="field-label">Confirm Password</label>
+                            <div class="relative">
+                                <input type="password" id="provider_password_confirm" name="password2"
+                                       class="field-input {% if form.password2.errors %}error{% endif %}" required>
+                                <span class="password-toggle" data-target="provider_password_confirm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 show-password" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hide-password hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="field-error">
+                                {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="agree_terms" class="mr-2"
+                                       {% if request.POST.agree_terms %}checked{% endif %} required>
+                                <span class="text-sm">
+                                    I agree to the <a href="#" class="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" class="text-blue-600 hover:underline">Privacy Policy</a>
+                                </span>
+                            </label>
+                            <div class="field-error"></div>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <button type="button" class="btn btn-outline prev-step" data-form="provider" data-current="4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                                </svg>
+                                Back
+                            </button>
+                            <button type="submit" class="btn btn-gradient">
+                                Complete Registration
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Already have an account link -->
+            <div class="text-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <p class="text-gray-600 dark:text-gray-400">
+                    Already have an account? <a href="{% url 'accounts:login_user' %}" class="text-blue-600 dark:text-blue-400 hover:underline font-medium">Sign In</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer with Dynamic Year -->
+        <div class="mt-10 text-center text-gray-500 text-sm">
+            <p>&copy; <script>document.write(new Date().getFullYear());</script> UrbanMD Health Network. All rights reserved.</p>
+            <div class="mt-2 flex justify-center space-x-4">
+                <a href="#" class="hover:text-blue-600">Privacy Policy</a>
+                <a href="#" class="hover:text-blue-600">Terms of Service</a>
+                <a href="#" class="hover:text-blue-600">Contact Us</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/intlTelInput.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD4hWMSn80HiRPfAGdvA8uTbpCq2GAyzsA&libraries=places"></script>
+
+    <script>
+        // Add this at the beginning of your script section
+        let formData = {
+            patient: {},
+            physician: {},
+            provider: {}
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize page
+            hidePageLoader();
+            setupUserTypeSelector();
+            setupFormSteps();
+            setupPasswordToggles();
+            initializePhoneInputs();
+            initializeLocationInputs();
+            preserveFormData();
+            restoreFormStateOnError();
+
+            // Dark mode toggle - check system preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        });
+
+        function hidePageLoader() {
+            // Hide loader after slight delay
+            setTimeout(function() {
+                const loader = document.querySelector('.page-loader');
+                loader.classList.add('loaded');
+                setTimeout(() => loader.remove(), 500);
+            }, 500);
+        }
+
+        function preserveFormData() {
+            // Add event listeners to all form inputs to save data as user types
+            document.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('change', function() {
+                    const form = this.closest('form');
+                    if (form) {
+                        const formType = form.id.split('-')[0];
+                        formData[formType][this.name] = this.type === 'checkbox' ? this.checked : this.value;
+                    }
+                });
+            });
+        }
+
+        function restoreFormStateOnError() {
+            // If there are form errors, restore the form to the step where the error occurred
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                if (form.querySelector('.form-errors')) {
+                    const formType = form.id.split('-')[0];
+
+                    // Find which step has an error
+                    const formSteps = form.querySelectorAll('.form-step');
+                    formSteps.forEach((step, index) => {
+                        if (step.querySelector('.field-error:not(:empty)')) {
+                            // Show this step
+                            showFormStep(formType, index + 1);
+                        }
+                    });
+                }
+            });
+        }
+
+        function showFormStep(formType, stepNumber) {
+            // Hide all steps
+            document.querySelectorAll(`#${formType}-form .form-step`).forEach((step, index) => {
+                step.classList.add('hidden');
+                step.classList.remove('active');
+            });
+
+            // Show the requested step
+            const targetStep = document.querySelector(`#${formType}-step-${stepNumber}`);
+            if (targetStep) {
+                targetStep.classList.remove('hidden');
+                targetStep.classList.add('active');
+            }
+
+            // Update step indicators
+            document.querySelectorAll(`#${formType}-form .step`).forEach((indicator, index) => {
+                if (index < stepNumber - 1) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('active');
+                } else if (index === stepNumber - 1) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        function setupUserTypeSelector() {
+            const userOptions = document.querySelectorAll('.selector-option');
+            const forms = {
+                'patient': document.getElementById('patient-form'),
+                'physician': document.getElementById('physician-form'),
+                'provider': document.getElementById('provider-form')
+            };
+
+            // Add moving background element to selector
+            const selector = document.querySelector('.user-type-selector');
+            const background = document.createElement('div');
+            background.className = 'selector-background';
+            selector.appendChild(background);
+
+            // Set initial background position
+            const activeOption = selector.querySelector('.selector-option.active');
+            if (activeOption) {
+                background.style.left = `${activeOption.offsetLeft}px`;
+                background.style.width = `${activeOption.offsetWidth}px`;
+            }
+
+            userOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Don't do anything if this option is already active
+                    if (this.classList.contains('active')) return;
+
+                    // Move the selector background
+                    background.style.left = `${this.offsetLeft}px`;
+                    background.style.width = `${this.offsetWidth}px`;
+
+                    // Get current and new form types
+                    const currentType = document.querySelector('.selector-option.active').getAttribute('data-type');
+                    const newType = this.getAttribute('data-type');
+
+                    // Update active state on options
+                    userOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Add exiting animation to current form
+                    forms[currentType].classList.add('exiting');
+
+                    // Perform transition with proper timing
+                    setTimeout(() => {
+                        // Hide all forms
+                        Object.values(forms).forEach(form => {
+                            form.classList.add('hidden');
+                            form.classList.remove('active', 'exiting', 'entering');
+                        });
+
+                        // Reset the new form steps
+                        resetFormSteps(newType);
+
+                        // Show the new form
+                        forms[newType].classList.remove('hidden');
+                        forms[newType].classList.add('active', 'entering');
+
+                        // Restore saved data for this form type
+                        restoreFormData(newType);
+
+                        // Remove animation class after animation completes
+                        setTimeout(() => {
+                            forms[newType].classList.remove('entering');
+                        }, 500);
+                    }, 300); // Time should match the exiting animation duration
+                });
+            });
+        }
+
+        function restoreFormData(formType) {
+            // Restore saved form data when switching between forms
+            const savedData = formData[formType];
+            if (savedData) {
+                Object.keys(savedData).forEach(fieldName => {
+                    const field = document.querySelector(`#${formType}-form [name="${fieldName}"]`);
+                    if (field) {
+                        if (field.type === 'checkbox') {
+                            field.checked = savedData[fieldName];
+                        } else {
+                            field.value = savedData[fieldName];
+                        }
+                    }
+                });
+            }
+        }
+
+        function resetFormSteps(formType) {
+            const steps = document.querySelectorAll(`#${formType}-form .step`);
+            const formSteps = document.querySelectorAll(`#${formType}-form .form-step`);
+
+            // Reset step indicators
+            steps.forEach((step, index) => {
+                if (index === 0) {
+                    step.classList.add('active');
+                    step.classList.remove('completed');
+                } else {
+                    step.classList.remove('active', 'completed');
+                }
+            });
+
+            // Reset form steps
+            formSteps.forEach((step, index) => {
+                if (index === 0) {
+                    step.classList.add('active');
+                    step.classList.remove('hidden');
+                } else {
+                    step.classList.remove('active');
+                    step.classList.add('hidden');
+                }
+            });
+        }
+
+        function setupFormSteps() {
+            // Handle next step buttons
+            document.querySelectorAll('.next-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.getAttribute('data-form');
+                    const currentStep = parseInt(this.getAttribute('data-current'));
+                    const nextStep = currentStep + 1;
+
+                    // Validate current step fields
+                    if (!validateStep(form, currentStep)) {
+                        return;
+                    }
+
+                    // Update step indicators
+                    document.querySelector(`#${form}-form .step[data-step="${currentStep}"]`).classList.remove('active');
+                    document.querySelector(`#${form}-form .step[data-step="${currentStep}"]`).classList.add('completed');
+                    document.querySelector(`#${form}-form .step[data-step="${nextStep}"]`).classList.add('active');
+
+                    // Hide current step, show next step
+                    document.querySelector(`#${form}-step-${currentStep}`).classList.remove('active');
+                    document.querySelector(`#${form}-step-${currentStep}`).classList.add('hidden');
+                    document.querySelector(`#${form}-step-${nextStep}`).classList.remove('hidden');
+                    document.querySelector(`#${form}-step-${nextStep}`).classList.add('active');
+                });
+            });
+
+            // Handle previous step buttons
+            document.querySelectorAll('.prev-step').forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.getAttribute('data-form');
+                    const currentStep = parseInt(this.getAttribute('data-current'));
+                    const prevStep = currentStep - 1;
+
+                    // Update step indicators
+                    document.querySelector(`#${form}-form .step[data-step="${currentStep}"]`).classList.remove('active');
+                    document.querySelector(`#${form}-form .step[data-step="${prevStep}"]`).classList.remove('completed');
+                    document.querySelector(`#${form}-form .step[data-step="${prevStep}"]`).classList.add('active');
+
+                    // Hide current step, show previous step
+                    document.querySelector(`#${form}-step-${currentStep}`).classList.remove('active');
+                    document.querySelector(`#${form}-step-${currentStep}`).classList.add('hidden');
+                    document.querySelector(`#${form}-step-${prevStep}`).classList.remove('hidden');
+                    document.querySelector(`#${form}-step-${prevStep}`).classList.add('active');
+                });
+            });
+        }
+
+        function validateStep(form, step) {
+            const stepElement = document.querySelector(`#${form}-step-${step}`);
+            const requiredFields = stepElement.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                const errorElement = field.closest('.field-group').querySelector('.field-error');
+
+                // Clear previous client-side errors (keep server-side errors)
+                if (!errorElement.textContent.includes('This field is required for')) {
+                    errorElement.textContent = '';
+                    field.classList.remove('border-red-500');
+                }
+
+                if (field.value.trim() === '') {
+                    errorElement.textContent = 'This field is required';
+                    field.classList.add('border-red-500');
+                    isValid = false;
+                } else {
+                    // Only clear if it's a client-side validation error
+                    if (errorElement.textContent === 'This field is required') {
+                        errorElement.textContent = '';
+                        field.classList.remove('border-red-500');
+                    }
+
+                    // Email validation
+                    if (field.type === 'email' && !validateEmail(field.value)) {
+                        errorElement.textContent = 'Please enter a valid email address';
+                        field.classList.add('border-red-500');
+                        isValid = false;
+                    }
+
+                    // Password validation in step 3 (or 4 for physicians/providers)
+                    if (field.type === 'password' && field.id.includes('password') && !field.id.includes('confirm')) {
+                        if (field.value.length < 8) {
+                            errorElement.textContent = 'Password must be at least 8 characters';
+                            field.classList.add('border-red-500');
+                            isValid = false;
+                        } else if (!/[A-Za-z]/.test(field.value) || !/[0-9]/.test(field.value)) {
+                            errorElement.textContent = 'Password must include both letters and numbers';
+                            field.classList.add('border-red-500');
+                            isValid = false;
+                        }
+                    }
+
+                    // Password confirmation validation
+                    if (field.id.includes('confirm')) {
+                        const passwordField = document.getElementById(field.id.replace('_confirm', ''));
+                        if (passwordField && field.value !== passwordField.value) {
+                            errorElement.textContent = 'Passwords do not match';
+                            field.classList.add('border-red-500');
+                            isValid = false;
+                        }
+                    }
+                }
+            });
+
+            return isValid;
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function setupPasswordToggles() {
+            document.querySelectorAll('.password-toggle').forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const passwordField = document.getElementById(targetId);
+                    const showIcon = this.querySelector('.show-password');
+                    const hideIcon = this.querySelector('.hide-password');
+
+                    if (passwordField.type === 'password') {
+                        passwordField.type = 'text';
+                        showIcon.classList.add('hidden');
+                        hideIcon.classList.remove('hidden');
+                    } else {
+                        passwordField.type = 'password';
+                        hideIcon.classList.add('hidden');
+                        showIcon.classList.remove('hidden');
+                    }
+                });
+            });
+        }
+
+        function initializePhoneInputs() {
+            // Initialize phone inputs for all forms
+            const phoneInputIds = [
+                { inputId: 'patient_phone', hiddenId: 'patient_phone_hidden' },
+                { inputId: 'physician_phone', hiddenId: 'physician_phone_hidden' },
+                { inputId: 'provider_phone', hiddenId: 'provider_phone_hidden' }
+            ];
+
+            phoneInputIds.forEach(item => {
+                const input = document.getElementById(item.inputId);
+                const hiddenInput = document.getElementById(item.hiddenId);
+
+                if (input && hiddenInput) {
+                    const iti = window.intlTelInput(input, {
+                        utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/18.2.1/js/utils.js',
+                        initialCountry: 'auto',
+                        geoIpLookup: function(callback) {
+                            fetch("https://ipapi.co/json")
+                                .then(res => res.json())
+                                .then(data => callback(data.country_code))
+                                .catch(() => callback("US"));
+                        },
+                        separateDialCode: true,
+                        autoPlaceholder: 'aggressive'
+                    });
+
+                    // Set full number in hidden field when input changes
+                    input.addEventListener('input', function() {
+                        if (iti.isValidNumber()) {
+                            hiddenInput.value = iti.getNumber();
+                            input.closest('.field-group').querySelector('.field-error').textContent = '';
+                        }
+                    });
+
+                    // Validate on blur
+                    input.addEventListener('blur', function() {
+                        const errorElement = input.closest('.field-group').querySelector('.field-error');
+                        if (input.value.trim() && !iti.isValidNumber()) {
+                            errorElement.textContent = 'Please enter a valid phone number';
+                        } else {
+                            errorElement.textContent = '';
+                            hiddenInput.value = iti.getNumber();
+                        }
+                    });
+                }
+            });
+        }
+
+        function initializeLocationInputs() {
+            // Initialize location autocomplete for all forms
+            const locationInputIds = [
+                {
+                    inputId: 'patient_location',
+                    addressId: 'patient_address',
+                    cityId: 'patient_city',
+                    stateId: 'patient_state',
+                    postalCodeId: 'patient_postal_code',
+                    countryId: 'patient_country',
+                    latId: 'patient_latitude',
+                    lngId: 'patient_longitude'
+                },
+                {
+                    inputId: 'physician_location',
+                    addressId: 'physician_address',
+                    cityId: 'physician_city',
+                    stateId: 'physician_state',
+                    postalCodeId: 'physician_postal_code',
+                    countryId: 'physician_country',
+                    latId: 'physician_latitude',
+                    lngId: 'physician_longitude'
+                },
+                {
+                    inputId: 'provider_location',
+                    addressId: 'provider_address',
+                    cityId: 'provider_city',
+                    stateId: 'provider_state',
+                    postalCodeId: 'provider_postal_code',
+                    countryId: 'provider_country',
+                    latId: 'provider_latitude',
+                    lngId: 'provider_longitude'
+                }
+            ];
+
+            locationInputIds.forEach(item => {
+                const input = document.getElementById(item.inputId);
+
+                if (input) {
+                    const options = {
+                        fields: ["address_components", "geometry", "formatted_address"],
+                        strictBounds: false,
+                    };
+
+                    const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+                    // Try to get user's location to bias results
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const geolocation = {
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude
+                                };
+                                const circle = new google.maps.Circle({
+                                    center: geolocation,
+                                    radius: 50000 // 50km
+                                });
+                                autocomplete.setBounds(circle.getBounds());
+                            }
+                        );
+                    }
+
+                    // Process place details when a place is selected
+                    autocomplete.addListener("place_changed", () => {
+                        const place = autocomplete.getPlace();
+
+                        if (!place.geometry) {
+                            input.closest('.field-group').querySelector('.field-error').textContent = 'Please select a valid address';
+                            return;
+                        }
+
+                        // Clear any previous error
+                        input.closest('.field-group').querySelector('.field-error').textContent = '';
+
+                        // Set address fields
+                        document.getElementById(item.addressId).value = place.formatted_address;
+                        document.getElementById(item.latId).value = place.geometry.location.lat();
+                        document.getElementById(item.lngId).value = place.geometry.location.lng();
+
+                        // Extract address components
+                        let city = '';
+                        let state = '';
+                        let postalCode = '';
+                        let country = '';
+
+                        for (const component of place.address_components) {
+                            const componentType = component.types[0];
+
+                            switch (componentType) {
+                                case "locality":
+                                    city = component.long_name;
+                                    break;
+                                case "administrative_area_level_1":
+                                    state = component.long_name;
+                                    break;
+                                case "postal_code":
+                                    postalCode = component.long_name;
+                                    break;
+                                case "country":
+                                    country = component.short_name;
+                                    break;
+                            }
+                        }
+
+                        document.getElementById(item.cityId).value = city;
+                        document.getElementById(item.stateId).value = state;
+                        document.getElementById(item.postalCodeId).value = postalCode;
+                        document.getElementById(item.countryId).value = country;
+                    });
+                }
+            });
+        }
+
+        // Form submission enhancement with validation
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                // Form type
+                const formType = this.id.split('-')[0];
+
+                // Validate all required fields
+                let isValid = true;
+                const requiredFields = this.querySelectorAll('input[required], select[required]');
+
+                requiredFields.forEach(field => {
+                    const errorElement = field.closest('.field-group').querySelector('.field-error');
+
+                    if (field.value.trim() === '') {
+                        errorElement.textContent = 'This field is required';
+                        field.classList.add('border-red-500');
+                        isValid = false;
+                    }
+                });
+
+                // Validate passwords match
+                const password = document.getElementById(`${formType}_password`);
+                const confirmPassword = document.getElementById(`${formType}_password_confirm`);
+
+                if (password && confirmPassword && password.value !== confirmPassword.value) {
+                    confirmPassword.closest('.field-group').querySelector('.field-error').textContent = 'Passwords do not match';
+                    confirmPassword.classList.add('border-red-500');
+                    isValid = false;
+                }
+
+                // Validate terms agreement
+                const termsCheckbox = this.querySelector('input[name="agree_terms"]');
+                if (termsCheckbox && !termsCheckbox.checked) {
+                    termsCheckbox.closest('.field-group').querySelector('.field-error').textContent = 'You must agree to the terms';
+                    isValid = false;
+                }
+
+                // If valid, submit the form
+                if (isValid) {
+                    const phoneInputIdsSubmit = [
+                        { inputId: 'patient_phone', hiddenId: 'patient_phone_hidden' },
+                        { inputId: 'physician_phone', hiddenId: 'physician_phone_hidden' },
+                        { inputId: 'provider_phone', hiddenId: 'provider_phone_hidden' }
+                    ];
+
+                    phoneInputIdsSubmit.forEach(item => {
+                        const input = document.getElementById(item.inputId);
+                        const hiddenInput = document.getElementById(item.hiddenId);
+                        if (input && hiddenInput) {
+                            input.value = hiddenInput.value;
+                        }
+                    });
+                    // Show loading state on submit button
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+
+                    // Submit the form after a small delay to show the loading state
+                    setTimeout(() => {
+                        this.submit();
+                    }, 500);
+                } else {
+                    // Scroll to the first error
+                    const firstError = this.querySelector('.field-error:not(:empty)');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+            });
+        });
+
+        // Add click animation to all pulse buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-pulse').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove any existing animation
+                    this.classList.remove('bouncing');
+
+                    // Force a reflow to restart the animation
+                    void this.offsetWidth;
+
+                    // Add the animation class
+                    this.classList.add('bouncing');
+
+                    // Clean up animation class after it completes
+                    setTimeout(() => {
+                        this.classList.remove('bouncing');
+                    }, 600); // Match animation duration
+                });
+            });
+        });
+
+        // Add tooltip explanations for certain fields
+        const tooltipFields = [
+            { id: 'physician_npi', text: 'National Provider Identifier - A unique 10-digit identification number' },
+            { id: 'provider_tax_id', text: 'Also known as Employer Identification Number (EIN)' }
+        ];
+
+        tooltipFields.forEach(field => {
+            const element = document.getElementById(field.id);
+            if (element) {
+                const label = element.closest('.field-group').querySelector('.field-label');
+
+                // Add tooltip icon
+                const tooltip = document.createElement('span');
+                tooltip.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block ml-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                `;
+                tooltip.setAttribute('title', field.text);
+                tooltip.style.cursor = 'help';
+
+                label.appendChild(tooltip);
+            }
+        });
+    </script>
+</body>
+</html>

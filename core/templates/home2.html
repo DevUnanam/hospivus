@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | UrbanMD Health Network{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6" data-user-type="{{ user_type }}">
+    {% if user_type == 'PATIENT' %}
+        {% include 'dashboards/patient_dashboard.html' %}
+    {% elif user_type == 'INDIVIDUAL_PROVIDER' %}
+        {% include 'dashboards/provider_dashboard.html' %}
+    {% elif user_type == 'ORGANIZATION' %}
+        {% include 'dashboards/organization_dashboard.html' %}
+    {% elif user_type == 'ADMIN' %}
+        {% include 'dashboards/admin_dashboard.html' %}
+    {% endif %}
+</div>
+
+<!-- Modal for Search Results (Patient Dashboard) -->
+{% if user_type == 'PATIENT' %}
+<div id="doctorSearchModal" class="fixed inset-0 z-30 overflow-y-auto hidden bg-black/50 backdrop-blur-xs" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0 z-50">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <!-- Modal panel -->
+        <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full h-[80vh]">
+            <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="w-full">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-2xl leading-6 font-semibold text-gray-900 dark:text-white" id="modal-title">
+                                Search Results
+                            </h3>
+                            <button type="button" id="closeModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                                <span class="sr-only">Close</span>
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Results Summary -->
+                        <div id="resultsSummary" class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                            <p class="text-sm text-blue-800 dark:text-blue-200">
+                                <span id="resultsCount">0</span> doctors found matching your criteria
+                            </p>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loadingState" class="hidden py-12 text-center">
+                            <div class="inline-flex items-center">
+                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span class="text-gray-600 dark:text-gray-400">Searching for doctors...</span>
+                            </div>
+                        </div>
+
+                        <!-- Search Results Container -->
+                        <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2">
+                            <!-- Results will be dynamically inserted here -->
+                        </div>
+
+                        <!-- No Results State -->
+                        <div id="noResults" class="hidden py-12 text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No doctors found</h3>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Try adjusting your search criteria or removing some filters.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/pages/home.js' %}"></script>
+{% endblock %}

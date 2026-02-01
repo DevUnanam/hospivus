@@ -1,0 +1,793 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard | UrbanMD Health Network{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Message & Quick Actions -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back, {{ request.user.first_name }}!</h2>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">Here's what's happening with your health today.</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-wrap gap-3">
+                <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Find Doctors
+                </a>
+                <a href="#" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Book Appointment
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Find Doctors - Now Full Width -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="bg-green-600 dark:bg-green-700 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-white">Find Doctors</h3>
+                <a href="#" class="text-green-100 hover:text-white text-sm font-medium transition-colors">
+                    View All Doctors
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="p-6">
+            <!-- Find Doctors Search and Filter -->
+            <form id="doctorSearchForm" class="max-w-full mx-auto bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6 shadow-lg transform transition-transform hover:shadow-xl">
+                <div class="mb-4">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="text" id="searchQuery" name="query" placeholder="Search by doctor name, specialty, or keyword" class="pl-12 w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all text-base shadow-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Specialty</label>
+                        <div class="relative">
+                            <select name="specialty" id="specialty" class="search-input w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none">
+                                <option value="">All Specialties</option>
+                                <option value="cardiology">Cardiology</option>
+                                <option value="dermatology">Dermatology</option>
+                                <option value="neurology">Neurology</option>
+                                <option value="pediatrics">Pediatrics</option>
+                                <option value="psychiatry">Psychiatry</option>
+                                <option value="orthopedics">Orthopedics</option>
+                                <option value="gynecology">Gynecology</option>
+                                <option value="internal_medicine">Internal Medicine</option>
+                                <option value="emergency_medicine">Emergency Medicine</option>
+                                <option value="family_medicine">Family Medicine</option>
+                                <option value="radiology">Radiology</option>
+                                <option value="anesthesiology">Anesthesiology</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#667085]">
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Years of Experience</label>
+                        <div class="relative">
+                            <select name="experience" id="experience" class="search-input w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none">
+                                <option value="">Any Experience</option>
+                                <option value="0-5">0-5 years</option>
+                                <option value="5-10">5-10 years</option>
+                                <option value="10-15">10-15 years</option>
+                                <option value="15+">15+ years</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#667085]">
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Insurance</label>
+                        <div class="relative">
+                            <select name="insurance" id="insurance" class="search-input w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none">
+                                <option value="">All Insurance</option>
+                                <option value="blue-cross">Blue Cross</option>
+                                <option value="aetna">Aetna</option>
+                                <option value="united">UnitedHealthcare</option>
+                                <option value="cigna">Cigna</option>
+                                <option value="medicare">Medicare</option>
+                                <option value="medicaid">Medicaid</option>
+                                <option value="humana">Humana</option>
+                                <option value="kaiser">Kaiser Permanente</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#667085]">
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Availability</label>
+                        <div class="relative">
+                            <select name="availability" id="availability" class="search-input w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none">
+                                <option value="">Any Availability</option>
+                                <option value="today">Today</option>
+                                <option value="this-week">This Week</option>
+                                <option value="next-week">Next Week</option>
+                                <option value="telehealth">Telehealth Available</option>
+                                <option value="new-patients">Accepting New Patients</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#667085]">
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row sm:justify-between items-start">
+                    <div class="flex items-center mb-3 sm:mb-0">
+                        <span class="text-gray-700 dark:text-gray-300 text-sm mr-2">Sort by:</span>
+                        <div class="relative">
+                            <select name="sort" id="sort" class="p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all appearance-none">
+                                <option value="relevance">Most Relevant</option>
+                                <option value="rating">Highest Rated</option>
+                                <option value="experience">Most Experienced</option>
+                                <option value="availability">Earliest Availability</option>
+                                <option value="distance">Nearest to Me</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#667085]">
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full sm:w-auto py-3 px-6 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium rounded-lg transition-all shadow-sm">
+                        <span class="inline-flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            Search Doctors
+                        </span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Doctor Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Doctor Card 1 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-16 w-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                <img src="{% static 'images/7.png' %}" alt="Dr. Sarah Johnson" class="h-full w-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">Dr. Sarah Johnson</h4>
+                                <p class="text-sm text-blue-600 dark:text-blue-400">Cardiology</p>
+                                <div class="flex items-center mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    </svg>
+                                    <span class="ml-1 text-sm text-gray-600 dark:text-gray-400">4.9 (128)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            <p>15 years of experience in treating cardiovascular diseases with a focus on preventive care.</p>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                Insurance Accepted
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300">
+                                Available Today
+                            </span>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Card 2 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-16 w-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                <img src="{% static 'images/8.png' %}" alt="Dr. Michael Chen" class="h-full w-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">Dr. Michael Chen</h4>
+                                <p class="text-sm text-blue-600 dark:text-blue-400">Dermatology</p>
+                                <div class="flex items-center mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    </svg>
+                                    <span class="ml-1 text-sm text-gray-600 dark:text-gray-400">4.8 (96)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            <p>Specialized in medical and cosmetic dermatology with expertise in treating skin conditions.</p>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                Insurance Accepted
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300">
+                                Telehealth
+                            </span>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Card 3 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="p-5">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-16 w-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-700">
+                                <img src="{% static 'images/9.png' %}" alt="Dr. Maya Patel" class="h-full w-full object-cover">
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">Dr. Maya Patel</h4>
+                                <p class="text-sm text-blue-600 dark:text-blue-400">Pediatrics</p>
+                                <div class="flex items-center mt-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    </svg>
+                                    <span class="ml-1 text-sm text-gray-600 dark:text-gray-400">4.9 (212)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                            <p>Compassionate care for children of all ages with a focus on developmental health and wellness.</p>
+                        </div>
+                        <div class="mt-4 flex space-x-2">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                Insurance Accepted
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                New Patients
+                            </span>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Search Results -->
+    <div id="doctorSearchModal" class="fixed inset-0 z-30 overflow-y-auto hidden bg-black/50 backdrop-blur-xs" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Background overlay -->
+        <div class="inset-0" aria-hidden="true"></div>
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0 z-50">
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal panel -->
+            <div class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full h-[80vh]">
+                <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="w-full">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-2xl leading-6 font-semibold text-gray-900 dark:text-white" id="modal-title">
+                                    Search Results
+                                </h3>
+                                <button type="button" id="closeModal" class="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none">
+                                    <span class="sr-only">Close</span>
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Results Summary -->
+                            <div id="resultsSummary" class="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                                <p class="text-sm text-blue-800 dark:text-blue-200">
+                                    <span id="resultsCount">0</span> doctors found matching your criteria
+                                </p>
+                            </div>
+
+                            <!-- Loading State -->
+                            <div id="loadingState" class="hidden py-12 text-center">
+                                <div class="inline-flex items-center">
+                                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    <span class="text-gray-600 dark:text-gray-400">Searching for doctors...</span>
+                                </div>
+                            </div>
+
+                            <!-- Search Results Container -->
+                            <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2">
+                                <!-- Results will be dynamically inserted here -->
+                            </div>
+
+                            <!-- No Results State -->
+                            <div id="noResults" class="hidden py-12 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No doctors found</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Try adjusting your search criteria or removing some filters.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments Card - Now Full Width -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="bg-blue-600 dark:bg-blue-700 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-white">Upcoming Appointments</h3>
+                <a href="#" class="text-blue-100 hover:text-white text-sm font-medium transition-colors">
+                    View All
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="p-4">
+            {% if upcoming_appointments %}
+            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                {% for appointment in upcoming_appointments %}
+                <div class="py-4 flex flex-col sm:flex-row sm:items-start space-y-4 sm:space-y-0 sm:space-x-4 transition-all hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg p-2">
+                    <div class="flex-shrink-0">
+                        {% if appointment.doctor.profile_image %}
+                        <img class="h-12 w-12 rounded-full object-cover" src="{{ appointment.doctor.profile_image.url }}" alt="{{ appointment.doctor.get_full_name }}">
+                        {% else %}
+                        <div class="h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">
+                            Dr. {{ appointment.doctor.last_name }}
+                        </p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                            {{ appointment.specialty }}
+                        </p>
+                        <div class="mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            {{ appointment.date|date:"D, M d" }} at {{ appointment.time|time:"g:i A" }}
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-start sm:items-end space-y-2">
+                        <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                            Confirmed
+                        </span>
+                        <div class="flex space-x-2">
+                            <button class="inline-flex items-center p-1.5 border border-transparent rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all" title="Video Call">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                            <button class="inline-flex items-center p-1.5 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all" title="Reschedule">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </button>
+                            <button class="inline-flex items-center p-1.5 border border-gray-300 dark:border-gray-600 rounded-full shadow-sm text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all" title="Cancel">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-gray-900 dark:text-white">No appointments</h3>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Schedule your first appointment with a healthcare provider.</p>
+                <div class="mt-6">
+                    <a href="#?action=new" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Book Appointment
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Giftshop Recommendations (Full Width) -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Giftshop Recommendations</h3>
+                <a href="#" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium transition-colors">
+                    View All
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="p-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Product 1 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/vitamins&supplements2.webp' %}" alt="Vitamin D3 Supplement" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">Vitamin D3 Supplement</h4>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">120 tablets</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$19.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/medical_equipment2.jpg' %}" alt="Blood Pressure Monitor" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">Blood Pressure Monitor</h4>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Digital display, portable</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$49.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/personal_care.webp' %}" alt="Hypoallergenic Moisturizer" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">Hypoallergenic Moisturizer</h4>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Fragrance-free, 12 oz</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$24.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-all">
+                    <div class="h-48 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+                        <img src="{% static 'images/prescription_medication.webp' %}" alt="Fitness Tracker" class="h-full w-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h4 class="text-sm font-medium text-gray-900 dark:text-white">Fitness Tracker</h4>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Water resistant, heart rate monitor</p>
+                        <div class="mt-2 flex justify-between items-center">
+                            <span class="text-sm font-medium text-gray-900 dark:text-white">$79.99</span>
+                            <button class="inline-flex items-center px-2 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-medium text-gray-900 dark:text-white">Upcoming Health Events</h3>
+                <a href="#" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium transition-colors">
+                    View All Events
+                    <svg xmlns="http://www.w3.org/2000/svg" class="inline-block h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 py-1 px-3 rounded-full text-xs font-medium">
+                            Health Camp
+                        </div>
+                        <div class="text-gray-500 dark:text-gray-400 text-sm">
+                            Apr 28, 2025
+                        </div>
+                    </div>
+                    <h4 class="text-base font-semibold mb-2">Community Health Screening Day</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Free basic health check-ups, blood pressure monitoring, and nutrition consultations.</p>
+                    <div class="flex items-start text-sm text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Westside Community Center</span>
+                    </div>
+                </div>
+
+                <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 py-1 px-3 rounded-full text-xs font-medium">
+                            Webinar
+                        </div>
+                        <div class="text-gray-500 dark:text-gray-400 text-sm">
+                            May 5, 2025
+                        </div>
+                    </div>
+                    <h4 class="text-base font-semibold mb-2">Managing Chronic Conditions</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Expert panel discussion on managing diabetes, hypertension, and heart disease.</p>
+                    <div class="flex items-start text-sm text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        <span>Virtual Event (Zoom)</span>
+                    </div>
+                </div>
+
+                <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-5 card-hover">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 py-1 px-3 rounded-full text-xs font-medium">
+                            Workshop
+                        </div>
+                        <div class="text-gray-500 dark:text-gray-400 text-sm">
+                            May 12, 2025
+                        </div>
+                    </div>
+                    <h4 class="text-base font-semibold mb-2">Nutrition and Wellness Workshop</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">Hands-on workshop featuring meal planning and healthy cooking demonstrations.</p>
+                    <div class="flex items-start text-sm text-gray-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Urban Health Center</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation for progress bars (only when element is in viewport)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.width = entry.target.getAttribute('data-width');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Initialize progress bars with 0 width
+        document.querySelectorAll('.bg-green-500, .bg-yellow-500').forEach(bar => {
+            const width = bar.style.width;
+            bar.setAttribute('data-width', width);
+            bar.style.width = '0';
+            observer.observe(bar);
+        });
+
+        // Task checkbox handlers
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                if (this.checked) {
+                    label.classList.add('text-gray-400', 'dark:text-gray-500', 'line-through');
+                    label.classList.remove('text-gray-700', 'dark:text-gray-300');
+                } else {
+                    label.classList.remove('text-gray-400', 'dark:text-gray-500', 'line-through');
+                    label.classList.add('text-gray-700', 'dark:text-gray-300');
+                }
+            });
+        });
+
+        // Doctor Search Functionality
+        const searchForm = document.getElementById('doctorSearchForm');
+        const modal = document.getElementById('doctorSearchModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const searchResults = document.getElementById('searchResults');
+        const resultsCount = document.getElementById('resultsCount');
+        const loadingState = document.getElementById('loadingState');
+        const noResults = document.getElementById('noResults');
+        const resultsSummary = document.getElementById('resultsSummary');
+
+        // Handle form submission
+        searchForm.addEventListener('submit', async function(e) {
+            console.log("searching")
+            e.preventDefault();
+
+            // Show modal and loading state
+            modal.classList.remove('hidden');
+            loadingState.classList.remove('hidden');
+            searchResults.classList.add('hidden');
+            noResults.classList.add('hidden');
+            resultsSummary.classList.add('hidden');
+
+            // Collect form data
+            const formData = new FormData(searchForm);
+            const searchParams = new URLSearchParams();
+
+            // Add all form fields to search params
+            for (let [key, value] of formData) {
+                if (value) {
+                    searchParams.append(key, value);
+                }
+            }
+
+            try {
+                console.log("calling")
+                // Make call to Django view
+                const response = await fetch(`/doctors/search/?${searchParams.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                });
+
+                const data = await response.json();
+
+                // Hide loading state
+                loadingState.classList.add('hidden');
+
+                if (data.success && data.count > 0) {
+                    // Show results
+                    searchResults.innerHTML = data.html;
+                    resultsCount.textContent = data.count;
+                    resultsSummary.classList.remove('hidden');
+                    searchResults.classList.remove('hidden');
+                } else {
+                    // Show no results state
+                    noResults.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error searching doctors:', error);
+                // Hide loading and show no results
+                loadingState.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            }
+        });
+
+
+
+        // Close modal functionality
+        closeModalBtn.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+
+        // Close modal when clicking outside
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal || e.target.classList.contains('bg-gray-500')) {
+                modal.classList.add('hidden');
+            }
+        });
+
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    });
+
+    // Function to book appointment (to be implemented)
+    function bookAppointment(doctorId) {
+        // Redirect to booking page or open booking modal
+        window.location.href = `/appointments/book/${doctorId}/`;
+    }
+
+    // Function to view doctor profile (to be implemented)
+    function viewDoctorProfile(doctorId) {
+        // Redirect to doctor profile page
+        window.location.href = `/doctors/${doctorId}/`;
+    }
+</script>
+
+<style>
+    /* Custom scrollbar for search results */
+    #searchResults::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    #searchResults::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    #searchResults::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+
+    #searchResults::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+    /* Dark mode scrollbar */
+    .dark #searchResults::-webkit-scrollbar-track {
+        background: #374151;
+    }
+
+    .dark #searchResults::-webkit-scrollbar-thumb {
+        background: #6b7280;
+    }
+
+    .dark #searchResults::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+
+    /* Line clamp utility */
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Confirm Remove</h2>
+<p>Are you sure you want to remove "{{ cart_item.product.name }}" from your cart?</p>
+
+<form method="POST">
+  {% csrf_token %}
+  <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Yes, Remove</button>
+  <a href="{% url 'giftshops:view_cart' %}" class="ml-4">Cancel</a>
+</form>
+{% endblock %}
