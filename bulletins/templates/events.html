@@ -282,13 +282,20 @@
     {% endif %}
 </div>
 
+<!-- CSRF Token for JavaScript -->
+{% csrf_token %}
+
 <!-- Event Actions JavaScript -->
 <script>
 function registerForEvent(eventId) {
-    fetch(`/events/${eventId}/register/`, {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                     '{{ csrf_token }}';
+    
+    fetch(`/bulletins/events/${eventId}/register/`, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-CSRFToken': csrfToken,
             'Content-Type': 'application/json',
         },
     })
@@ -307,11 +314,15 @@ function registerForEvent(eventId) {
 }
 
 function unregisterFromEvent(eventId) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                     '{{ csrf_token }}';
+    
     if (confirm('Are you sure you want to unregister from this event?')) {
-        fetch(`/events/${eventId}/unregister/`, {
+        fetch(`/bulletins/events/${eventId}/unregister/`, {
             method: 'POST',
             headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-CSRFToken': csrfToken,
                 'Content-Type': 'application/json',
             },
         })
@@ -331,10 +342,14 @@ function unregisterFromEvent(eventId) {
 }
 
 function saveEvent(eventId) {
-    fetch(`/events/${eventId}/save/`, {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                     '{{ csrf_token }}';
+    
+    fetch(`/bulletins/events/${eventId}/save/`, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-CSRFToken': csrfToken,
             'Content-Type': 'application/json',
         },
     })
@@ -353,10 +368,14 @@ function saveEvent(eventId) {
 }
 
 function unsaveEvent(eventId) {
-    fetch(`/events/${eventId}/unsave/`, {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                     document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
+                     '{{ csrf_token }}';
+    
+    fetch(`/bulletins/events/${eventId}/unsave/`, {
         method: 'POST',
         headers: {
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'X-CSRFToken': csrfToken,
             'Content-Type': 'application/json',
         },
     })
